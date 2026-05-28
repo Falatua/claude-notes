@@ -1,0 +1,478 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Claude Notes</title>
+<style>
+  *,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+  :root{
+    --bg:#111;--surface:#1a1a1a;--surface2:#222;--border:#2a2a2a;--border2:#333;
+    --text:#e0e0e0;--text2:#888;--text3:#555;
+    --accent:#e8a020;--accent-dim:rgba(232,160,32,.15);
+    --green:#4caf7d;--red:#e05555;--blue:#4f8ef7;--purple:#9b72f5;
+    --radius:8px;--transition:.15s ease;
+  }
+  html,body{height:100%;font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;background:var(--bg);color:var(--text);font-size:14px;line-height:1.5}
+  ::-webkit-scrollbar{width:6px}::-webkit-scrollbar-track{background:transparent}::-webkit-scrollbar-thumb{background:var(--border2);border-radius:3px}
+
+  /* LAYOUT */
+  .app{display:flex;height:100vh;overflow:hidden}
+  .sidebar{width:220px;min-width:220px;background:var(--surface);border-right:1px solid var(--border);display:flex;flex-direction:column;overflow-y:auto;padding:16px 0}
+  .main{flex:1;display:flex;flex-direction:column;overflow:hidden}
+
+  /* SIDEBAR */
+  .sidebar-title{padding:4px 16px 16px;font-size:16px;font-weight:700;color:var(--text);letter-spacing:-.3px}
+  .sidebar-title span{color:var(--accent)}
+  .sidebar-section{padding:4px 0 8px;margin-bottom:4px}
+  .sidebar-label{padding:4px 16px;font-size:11px;font-weight:600;text-transform:uppercase;letter-spacing:.08em;color:var(--text3)}
+  .nav-item{display:flex;align-items:center;gap:8px;padding:6px 16px;cursor:pointer;border-radius:0;color:var(--text2);transition:var(--transition);font-size:13px;user-select:none}
+  .nav-item:hover{background:var(--surface2);color:var(--text)}
+  .nav-item.active{background:var(--accent-dim);color:var(--accent)}
+  .nav-item .icon{width:16px;text-align:center;font-style:normal}
+  .nav-item .count{margin-left:auto;font-size:11px;background:var(--surface2);padding:1px 6px;border-radius:10px;color:var(--text3)}
+  .nav-item.active .count{background:var(--accent-dim);color:var(--accent)}
+  .sidebar-footer{margin-top:auto;padding:16px;border-top:1px solid var(--border)}
+  .sync-info{font-size:11px;color:var(--text3);line-height:1.6}
+  .sync-info b{color:var(--text2)}
+
+  /* HEADER */
+  .header{padding:20px 24px 0;border-bottom:1px solid var(--border)}
+  .header-top{display:flex;align-items:center;gap:12px;margin-bottom:16px}
+  .page-title{font-size:22px;font-weight:700;letter-spacing:-.4px}
+  .header-actions{margin-left:auto;display:flex;gap:8px}
+  .btn{display:inline-flex;align-items:center;gap:6px;padding:6px 12px;border-radius:var(--radius);border:none;cursor:pointer;font-size:13px;font-weight:500;transition:var(--transition)}
+  .btn-primary{background:var(--accent);color:#111}
+  .btn-primary:hover{background:#f0b030}
+  .btn-ghost{background:transparent;color:var(--text2);border:1px solid var(--border2)}
+  .btn-ghost:hover{background:var(--surface2);color:var(--text)}
+  .search-bar{display:flex;align-items:center;gap:8px;background:var(--surface2);border:1px solid var(--border);border-bottom:none;border-radius:var(--radius) var(--radius) 0 0;padding:8px 12px}
+  .search-bar input{flex:1;background:none;border:none;outline:none;color:var(--text);font-size:13px}
+  .search-bar input::placeholder{color:var(--text3)}
+  .search-icon{color:var(--text3);font-size:13px}
+
+  /* ADD ITEM */
+  .add-area{padding:16px 24px;border-bottom:1px solid var(--border)}
+  .add-row{display:flex;gap:8px;align-items:center}
+  .add-input{flex:1;background:var(--surface2);border:1px solid var(--border);border-radius:var(--radius);padding:9px 12px;color:var(--text);font-size:13px;outline:none;transition:var(--transition)}
+  .add-input:focus{border-color:var(--accent);background:var(--surface)}
+  .add-input::placeholder{color:var(--text3)}
+  .type-select{background:var(--surface2);border:1px solid var(--border);border-radius:var(--radius);padding:9px 10px;color:var(--text2);font-size:13px;outline:none;cursor:pointer}
+  .type-select:focus{border-color:var(--accent)}
+
+  /* LIST */
+  .list-area{flex:1;overflow-y:auto;padding:8px 24px 24px}
+  .empty-state{display:flex;flex-direction:column;align-items:center;justify-content:center;height:200px;color:var(--text3);gap:8px}
+  .empty-state .empty-icon{font-size:32px;opacity:.4}
+  .empty-state p{font-size:13px}
+
+  .section-header{display:flex;align-items:center;gap:8px;padding:16px 0 8px;color:var(--text3);font-size:12px;font-weight:600;text-transform:uppercase;letter-spacing:.08em;cursor:pointer;user-select:none}
+  .section-header:hover{color:var(--text2)}
+  .section-divider{flex:1;height:1px;background:var(--border)}
+
+  .item{display:flex;align-items:flex-start;gap:10px;padding:10px 12px;border-radius:var(--radius);background:var(--surface);border:1px solid var(--border);margin-bottom:6px;transition:var(--transition);cursor:default;group:true}
+  .item:hover{border-color:var(--border2);background:var(--surface2)}
+  .item.done .item-text{text-decoration:line-through;color:var(--text3)}
+  .item.done .item-meta{opacity:.5}
+
+  .checkbox{width:16px;height:16px;min-width:16px;border:2px solid var(--border2);border-radius:4px;cursor:pointer;display:flex;align-items:center;justify-content:center;margin-top:1px;transition:var(--transition)}
+  .checkbox:hover{border-color:var(--accent)}
+  .item.done .checkbox{background:var(--green);border-color:var(--green)}
+  .checkbox-check{font-size:10px;color:#fff;display:none}
+  .item.done .checkbox-check{display:block}
+
+  .item-body{flex:1;min-width:0}
+  .item-text{font-size:13px;color:var(--text);line-height:1.5;word-break:break-word}
+  .item-meta{display:flex;align-items:center;gap:8px;margin-top:4px}
+  .badge{display:inline-flex;align-items:center;gap:4px;padding:2px 7px;border-radius:4px;font-size:11px;font-weight:500}
+  .badge-task{background:rgba(79,142,247,.15);color:#4f8ef7}
+  .badge-idea{background:rgba(232,160,32,.15);color:#e8a020}
+  .badge-note{background:rgba(155,114,245,.15);color:#9b72f5}
+  .badge-project{background:rgba(76,175,125,.15);color:#4caf7d}
+  .item-date{font-size:11px;color:var(--text3)}
+  .item-source{font-size:11px;color:var(--text3);display:flex;align-items:center;gap:3px}
+
+  .item-actions{display:flex;gap:4px;opacity:0;transition:var(--transition)}
+  .item:hover .item-actions{opacity:1}
+  .action-btn{background:none;border:none;cursor:pointer;color:var(--text3);padding:2px 4px;border-radius:4px;font-size:12px;line-height:1;transition:var(--transition)}
+  .action-btn:hover{color:var(--red);background:rgba(224,85,85,.1)}
+
+  /* MODAL */
+  .modal-backdrop{position:fixed;inset:0;background:rgba(0,0,0,.6);display:flex;align-items:center;justify-content:center;z-index:100;backdrop-filter:blur(2px)}
+  .modal-backdrop.hidden{display:none}
+  .modal{background:var(--surface);border:1px solid var(--border2);border-radius:12px;padding:24px;width:480px;max-width:calc(100vw - 32px)}
+  .modal-title{font-size:16px;font-weight:700;margin-bottom:16px}
+  .form-group{margin-bottom:12px}
+  .form-label{font-size:12px;color:var(--text2);margin-bottom:6px;display:block}
+  .form-input{width:100%;background:var(--surface2);border:1px solid var(--border2);border-radius:var(--radius);padding:9px 12px;color:var(--text);font-size:13px;outline:none;font-family:inherit}
+  .form-input:focus{border-color:var(--accent)}
+  textarea.form-input{resize:vertical;min-height:80px}
+  .form-row{display:flex;gap:8px}
+  .form-row .form-group{flex:1}
+  .modal-actions{display:flex;gap:8px;justify-content:flex-end;margin-top:16px}
+
+  /* TOAST */
+  .toast{position:fixed;bottom:24px;right:24px;background:var(--surface2);border:1px solid var(--border2);border-radius:var(--radius);padding:10px 16px;font-size:13px;color:var(--text);z-index:200;opacity:0;transform:translateY(8px);transition:.2s ease;pointer-events:none}
+  .toast.show{opacity:1;transform:translateY(0)}
+
+  /* RESPONSIVE */
+  @media(max-width:600px){
+    .sidebar{display:none}
+    .header-top{flex-wrap:wrap}
+  }
+</style>
+</head>
+<body>
+<div class="app">
+
+  <!-- SIDEBAR -->
+  <aside class="sidebar">
+    <div class="sidebar-title">Claude <span>Notes</span></div>
+    <div class="sidebar-section">
+      <div class="sidebar-label">Views</div>
+      <div class="nav-item active" onclick="setFilter('all')" id="nav-all">
+        <i class="icon">◈</i> All Items <span class="count" id="cnt-all">0</span>
+      </div>
+      <div class="nav-item" onclick="setFilter('active')" id="nav-active">
+        <i class="icon">○</i> Active <span class="count" id="cnt-active">0</span>
+      </div>
+      <div class="nav-item" onclick="setFilter('done')" id="nav-done">
+        <i class="icon">✓</i> Completed <span class="count" id="cnt-done">0</span>
+      </div>
+    </div>
+    <div class="sidebar-section">
+      <div class="sidebar-label">Categories</div>
+      <div class="nav-item" onclick="setFilter('task')" id="nav-task">
+        <i class="icon">◻</i> Tasks <span class="count" id="cnt-task">0</span>
+      </div>
+      <div class="nav-item" onclick="setFilter('idea')" id="nav-idea">
+        <i class="icon">◈</i> Ideas <span class="count" id="cnt-idea">0</span>
+      </div>
+      <div class="nav-item" onclick="setFilter('note')" id="nav-note">
+        <i class="icon">◇</i> Notes <span class="count" id="cnt-note">0</span>
+      </div>
+      <div class="nav-item" onclick="setFilter('project')" id="nav-project">
+        <i class="icon">▷</i> Projects <span class="count" id="cnt-project">0</span>
+      </div>
+    </div>
+    <div class="sidebar-footer">
+      <div class="sync-info">
+        <b>Telegram sync</b><br>
+        Message your bot:<br>
+        <code style="color:var(--accent);font-size:11px">todo: your task</code><br>
+        <code style="color:var(--accent);font-size:11px">idea: your idea</code><br>
+        <code style="color:var(--accent);font-size:11px">note: your note</code>
+      </div>
+    </div>
+  </aside>
+
+  <!-- MAIN -->
+  <div class="main">
+    <div class="header">
+      <div class="header-top">
+        <div class="page-title" id="page-title">All Items</div>
+        <div class="header-actions">
+          <button class="btn btn-ghost" onclick="importJSON()">Import</button>
+          <button class="btn btn-ghost" onclick="exportJSON()">Export</button>
+          <button class="btn btn-primary" onclick="openModal()">+ Add</button>
+        </div>
+      </div>
+      <div class="search-bar">
+        <span class="search-icon">⌕</span>
+        <input type="text" id="search" placeholder="Search..." oninput="render()">
+      </div>
+    </div>
+
+    <div class="add-area">
+      <div class="add-row">
+        <select class="type-select" id="quick-type">
+          <option value="task">Task</option>
+          <option value="idea">Idea</option>
+          <option value="note">Note</option>
+          <option value="project">Project</option>
+        </select>
+        <input class="add-input" id="quick-input" placeholder="Quick add — press Enter..." onkeydown="quickAdd(event)">
+        <button class="btn btn-primary" onclick="quickAdd({key:'Enter'})">Add</button>
+      </div>
+    </div>
+
+    <div class="list-area" id="list"></div>
+  </div>
+
+</div>
+
+<!-- ADD MODAL -->
+<div class="modal-backdrop hidden" id="modal" onclick="closeModalOutside(event)">
+  <div class="modal">
+    <div class="modal-title">New Item</div>
+    <div class="form-group">
+      <label class="form-label">Title</label>
+      <input class="form-input" id="m-title" placeholder="What's on your mind?">
+    </div>
+    <div class="form-group">
+      <label class="form-label">Notes (optional)</label>
+      <textarea class="form-input" id="m-notes" placeholder="Any details..."></textarea>
+    </div>
+    <div class="form-row">
+      <div class="form-group">
+        <label class="form-label">Type</label>
+        <select class="form-input" id="m-type">
+          <option value="task">Task</option>
+          <option value="idea">Idea</option>
+          <option value="note">Note</option>
+          <option value="project">Project</option>
+        </select>
+      </div>
+      <div class="form-group">
+        <label class="form-label">Priority</label>
+        <select class="form-input" id="m-priority">
+          <option value="normal">Normal</option>
+          <option value="high">High</option>
+          <option value="low">Low</option>
+        </select>
+      </div>
+    </div>
+    <div class="modal-actions">
+      <button class="btn btn-ghost" onclick="closeModal()">Cancel</button>
+      <button class="btn btn-primary" onclick="addFromModal()">Add Item</button>
+    </div>
+  </div>
+</div>
+
+<div class="toast" id="toast"></div>
+
+<script>
+const STORAGE_KEY = 'claude_notes_v1';
+let filter = 'all';
+
+function load() {
+  try { return JSON.parse(localStorage.getItem(STORAGE_KEY)) || []; }
+  catch { return []; }
+}
+function save(items) {
+  localStorage.setItem(STORAGE_KEY, JSON.stringify(items));
+}
+
+function addItem(text, type='task', notes='', source='browser', priority='normal') {
+  const items = load();
+  items.unshift({
+    id: Date.now().toString(36) + Math.random().toString(36).slice(2,5),
+    text: text.trim(),
+    notes,
+    type,
+    priority,
+    source,
+    done: false,
+    createdAt: new Date().toISOString()
+  });
+  save(items);
+  render();
+  updateCounts();
+  toast(`Added: ${text.slice(0,40)}`);
+}
+
+function toggleDone(id) {
+  const items = load();
+  const i = items.findIndex(x => x.id === id);
+  if (i >= 0) { items[i].done = !items[i].done; items[i].updatedAt = new Date().toISOString(); }
+  save(items);
+  render();
+  updateCounts();
+}
+
+function deleteItem(id) {
+  const items = load().filter(x => x.id !== id);
+  save(items);
+  render();
+  updateCounts();
+  toast('Deleted');
+}
+
+function setFilter(f) {
+  filter = f;
+  document.querySelectorAll('.nav-item').forEach(el => el.classList.remove('active'));
+  const el = document.getElementById('nav-'+f);
+  if (el) el.classList.add('active');
+  const titles = {all:'All Items',active:'Active',done:'Completed',task:'Tasks',idea:'Ideas',note:'Notes',project:'Projects'};
+  document.getElementById('page-title').textContent = titles[f] || 'All Items';
+  render();
+}
+
+function filtered(items) {
+  const q = document.getElementById('search')?.value.toLowerCase() || '';
+  return items.filter(item => {
+    const matchQ = !q || item.text.toLowerCase().includes(q) || (item.notes||'').toLowerCase().includes(q);
+    const matchF = filter === 'all' ? true
+      : filter === 'active' ? !item.done
+      : filter === 'done' ? item.done
+      : item.type === filter;
+    return matchQ && matchF;
+  });
+}
+
+function fmtDate(iso) {
+  const d = new Date(iso);
+  const now = new Date();
+  const diff = now - d;
+  if (diff < 60000) return 'just now';
+  if (diff < 3600000) return Math.floor(diff/60000) + 'm ago';
+  if (diff < 86400000) return Math.floor(diff/3600000) + 'h ago';
+  return d.toLocaleDateString('en-US',{month:'short',day:'numeric'});
+}
+
+function render() {
+  const all = load();
+  const items = filtered(all);
+  const list = document.getElementById('list');
+  if (!items.length) {
+    list.innerHTML = `<div class="empty-state"><div class="empty-icon">◈</div><p>Nothing here yet.</p></div>`;
+    return;
+  }
+  const active = items.filter(x => !x.done);
+  const done = items.filter(x => x.done);
+
+  function itemHTML(item) {
+    const badgeClass = `badge badge-${item.type}`;
+    const labels = {task:'Task',idea:'Idea',note:'Note',project:'Project'};
+    const sourceIcon = item.source === 'telegram' ? '✈ Telegram' : '◉ Browser';
+    const priorityDot = item.priority === 'high' ? '<span style="color:#e05555;font-size:10px">▲ High</span>' : '';
+    return `<div class="item ${item.done?'done':''}" id="item-${item.id}">
+      <div class="checkbox" onclick="toggleDone('${item.id}')"><span class="checkbox-check">✓</span></div>
+      <div class="item-body">
+        <div class="item-text">${escHtml(item.text)}</div>
+        ${item.notes ? `<div style="font-size:12px;color:var(--text2);margin-top:2px">${escHtml(item.notes)}</div>` : ''}
+        <div class="item-meta">
+          <span class="${badgeClass}">${labels[item.type]||item.type}</span>
+          ${priorityDot}
+          <span class="item-date">${fmtDate(item.createdAt)}</span>
+          <span class="item-source">${sourceIcon}</span>
+        </div>
+      </div>
+      <div class="item-actions">
+        <button class="action-btn" onclick="deleteItem('${item.id}')" title="Delete">✕</button>
+      </div>
+    </div>`;
+  }
+
+  let html = '';
+  if (active.length) {
+    html += `<div class="section-header"><span>Active (${active.length})</span><div class="section-divider"></div></div>`;
+    html += active.map(itemHTML).join('');
+  }
+  if (done.length) {
+    html += `<div class="section-header"><span>Completed (${done.length})</span><div class="section-divider"></div></div>`;
+    html += done.map(itemHTML).join('');
+  }
+  list.innerHTML = html;
+}
+
+function updateCounts() {
+  const items = load();
+  const counts = {all:items.length, active:items.filter(x=>!x.done).length, done:items.filter(x=>x.done).length,
+    task:items.filter(x=>x.type==='task').length, idea:items.filter(x=>x.type==='idea').length,
+    note:items.filter(x=>x.type==='note').length, project:items.filter(x=>x.type==='project').length};
+  Object.entries(counts).forEach(([k,v]) => {
+    const el = document.getElementById('cnt-'+k);
+    if (el) el.textContent = v;
+  });
+}
+
+function quickAdd(e) {
+  if (e.key !== 'Enter') return;
+  const input = document.getElementById('quick-input');
+  const type = document.getElementById('quick-type').value;
+  const text = input.value.trim();
+  if (!text) return;
+  addItem(text, type);
+  input.value = '';
+}
+
+function openModal() {
+  document.getElementById('modal').classList.remove('hidden');
+  document.getElementById('m-title').focus();
+}
+function closeModal() { document.getElementById('modal').classList.add('hidden'); }
+function closeModalOutside(e) { if (e.target.id==='modal') closeModal(); }
+function addFromModal() {
+  const title = document.getElementById('m-title').value.trim();
+  if (!title) return;
+  addItem(title, document.getElementById('m-type').value,
+    document.getElementById('m-notes').value.trim(), 'browser',
+    document.getElementById('m-priority').value);
+  document.getElementById('m-title').value = '';
+  document.getElementById('m-notes').value = '';
+  closeModal();
+}
+
+document.addEventListener('keydown', e => {
+  if (e.key === 'Escape') closeModal();
+  if ((e.metaKey||e.ctrlKey) && e.key === 'n') { e.preventDefault(); openModal(); }
+});
+
+function exportJSON() {
+  const data = JSON.stringify(load(), null, 2);
+  const blob = new Blob([data], {type:'application/json'});
+  const a = document.createElement('a');
+  a.href = URL.createObjectURL(blob);
+  a.download = 'claude-notes.json';
+  a.click();
+}
+
+function importJSON() {
+  const input = document.createElement('input');
+  input.type = 'file'; input.accept = '.json';
+  input.onchange = e => {
+    const file = e.target.files[0];
+    const reader = new FileReader();
+    reader.onload = ev => {
+      try {
+        const data = JSON.parse(ev.target.result);
+        if (!Array.isArray(data)) { toast('Invalid JSON format'); return; }
+        const existing = load();
+        const existingIds = new Set(existing.map(x=>x.id));
+        const newItems = data.filter(x=>!existingIds.has(x.id));
+        save([...newItems, ...existing]);
+        render(); updateCounts();
+        toast(`Imported ${newItems.length} item(s)`);
+      } catch { toast('Failed to parse JSON'); }
+    };
+    reader.readAsText(file);
+  };
+  input.click();
+}
+
+function escHtml(s) {
+  return String(s).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;');
+}
+
+function toast(msg) {
+  const el = document.getElementById('toast');
+  el.textContent = msg;
+  el.classList.add('show');
+  clearTimeout(el._t);
+  el._t = setTimeout(() => el.classList.remove('show'), 2500);
+}
+
+// Check for ?import= URL param (for Telegram-injected items)
+function checkURLImport() {
+  const params = new URLSearchParams(location.search);
+  if (!params.has('add')) return;
+  try {
+    const data = JSON.parse(atob(params.get('add')));
+    if (Array.isArray(data)) {
+      const existing = load();
+      const existingIds = new Set(existing.map(x=>x.id));
+      const newItems = data.filter(x=>!existingIds.has(x.id));
+      save([...newItems, ...existing]);
+      toast(`Added ${newItems.length} item(s) from Telegram`);
+      history.replaceState({}, '', location.pathname);
+    }
+  } catch {}
+}
+
+checkURLImport();
+render();
+updateCounts();
+</script>
+</body>
+</html>
