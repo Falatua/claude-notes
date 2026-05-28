@@ -191,9 +191,9 @@
       <svg class="nav-icon" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><circle cx="8" cy="8" r="6"/></svg>
       Active <span class="nav-count" id="cnt-active">0</span>
     </div>
-    <div class="nav-item" id="nav-done" onclick="setFilter('done','view')" role="button" tabindex="0">
-      <svg class="nav-icon" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M3 8l3.5 3.5L13 4.5"/></svg>
-      Completed <span class="nav-count" id="cnt-done">0</span>
+    <div class="nav-item" id="nav-archive" onclick="setFilter('archive','view')" role="button" tabindex="0">
+      <svg class="nav-icon" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M2 5h12v1.5H2zM3 6.5h10l-.8 7H3.8z"/><path d="M6 10h4"/></svg>
+      Archive <span class="nav-count" id="cnt-archive">0</span>
     </div>
   </div>
 
@@ -386,8 +386,18 @@ function addItem(text, type='task', notes='', source='browser', priority='normal
 
 function toggleDone(id){
   const items=load();const i=items.findIndex(x=>x.id===id);if(i<0)return;
-  items[i].done=!items[i].done;items[i].updatedAt=new Date().toISOString();
+  items[i].done=true;
+  items[i].archived=true;
+  items[i].archivedAt=new Date().toISOString();
   save(items);render();updateCounts();
+  toast('Done — moved to Archive');
+}
+
+function restore(id){
+  const items=load();const i=items.findIndex(x=>x.id===id);if(i<0)return;
+  items[i].done=false;items[i].archived=false;delete items[i].archivedAt;
+  save(items);render();updateCounts();
+  toast('Restored to active list');
 }
 
 function del(id){save(load().filter(x=>x.id!==id));render();updateCounts();toast('Deleted');}
@@ -407,7 +417,7 @@ function setFilter(f, mode){
     document.getElementById('page-title').lastChild.textContent=' '+cat.label;
   } else {
     dot.style.display='none';
-    const titles={all:'All Items',active:'Active Items',done:'Completed',task:'Tasks',idea:'Ideas',note:'Notes',project:'Projects'};
+    const titles={all:'All Items',active:'Active Items',archive:'Archive',task:'Tasks',idea:'Ideas',note:'Notes',project:'Projects'};
     document.getElementById('page-title').lastChild.textContent=titles[f]||'All Items';
   }
   render();
@@ -417,13 +427,17 @@ function getFiltered(){
   const q=(document.getElementById('search')?.value||'').toLowerCase();
   return load().filter(item=>{
     const mq=!q||item.text.toLowerCase().includes(q)||(item.notes||'').toLowerCase().includes(q);
+    const isArchived=!!item.archived;
     let mf;
     if(filterMode==='view'){
-      mf=filter==='all'?true:filter==='active'?!item.done:filter==='done'?item.done:true;
+      if(filter==='archive') mf=isArchived;
+      else if(filter==='all') mf=!isArchived;
+      else if(filter==='active') mf=!isArchived&&!item.done;
+      else mf=false;
     } else if(filterMode==='type'){
-      mf=item.type===filter&&!item.done?true:item.type===filter;
+      mf=!isArchived&&item.type===filter;
     } else {
-      mf=(item.category||'general')===filter;
+      mf=!isArchived&&(item.category||'general')===filter;
     }
     return mq&&mf;
   });
@@ -438,29 +452,42 @@ function ageStr(iso){
   return d.toLocaleDateString('en-US',{month:'short',day:'numeric'});
 }
 
-function itemHTML(item){
+function itemHTML(item, isArchiveView){
   const cat=CATS[item.category||'general']||CATS.general;
   const typeBadge=`<span class="badge badge-${item.type}">${TYPE_LABEL[item.type]||item.type}</span>`;
   const catBadge=`<span class="badge-cat" style="background:${cat.dim};color:${cat.color}">${cat.label}</span>`;
   const prio=item.priority==='high'?`<span class="prio-high"><span class="prio-dot"></span>High</span>`:'';
   const src=`<span class="item-src">${item.source==='telegram'?'↗':'·'} ${SRC_LABEL[item.source]||item.source}</span>`;
   const notes=item.notes?`<div class="item-sub">${esc(item.notes)}</div>`:'';
-  return`<div class="item${item.done?' done':''}" id="item-${item.id}" role="listitem" style="--item-cat-color:${cat.color}">
+  const archivedDate=item.archivedAt?`<span class="item-date">done ${ageStr(item.archivedAt)}</span>`:'';
+  const actions=isArchiveView
+    ?`<button class="del-btn restore-btn" onclick="restore('${item.id}')" title="Restore to active" aria-label="Restore item" style="color:var(--green)">
+        <svg width="12" height="12" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="2"><path d="M3 8l3.5-3.5M3 8l3.5 3.5M3 8h9a2 2 0 0 1 0 4H9"/></svg>
+      </button>
+      <button class="del-btn" onclick="del('${item.id}')" title="Delete permanently" aria-label="Delete item">
+        <svg width="12" height="12" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="2"><path d="M3 8h10"/></svg>
+      </button>`
+    :`<button class="del-btn" onclick="del('${item.id}')" title="Delete" aria-label="Delete item">
+        <svg width="12" height="12" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="2"><path d="M3 8h10"/></svg>
+      </button>`;
+  const checkEl=isArchiveView
+    ?`<div class="cb cb-done" style="background:var(--green);border-color:var(--green);cursor:default">
+        <svg width="9" height="9" viewBox="0 0 10 10" fill="none" stroke="#111" stroke-width="2.2"><path d="M1.5 5l2.8 2.8 4.2-5"/></svg>
+      </div>`
+    :`<div class="cb" onclick="toggleDone('${item.id}')" role="checkbox" aria-checked="false" tabindex="0" onkeydown="if(event.key===' '||event.key==='Enter'){toggleDone('${item.id}');event.preventDefault()}">
+        <svg class="cb-check" width="9" height="9" viewBox="0 0 10 10" fill="none" stroke="#111" stroke-width="2.2"><path d="M1.5 5l2.8 2.8 4.2-5"/></svg>
+      </div>`;
+  const opacity=isArchiveView?'opacity:.55;':'';
+  return`<div class="item" id="item-${item.id}" role="listitem" style="--item-cat-color:${cat.color};${opacity}">
     <div class="item-bar"></div>
     <div class="item-inner">
-      <div class="cb" onclick="toggleDone('${item.id}')" role="checkbox" aria-checked="${item.done}" tabindex="0" onkeydown="if(event.key===' '||event.key==='Enter'){toggleDone('${item.id}');event.preventDefault()}">
-        <svg class="cb-check" width="9" height="9" viewBox="0 0 10 10" fill="none" stroke="#111" stroke-width="2.2"><path d="M1.5 5l2.8 2.8 4.2-5"/></svg>
-      </div>
+      ${checkEl}
       <div class="item-body">
-        <div class="item-text">${esc(item.text)}</div>
+        <div class="item-text" style="${isArchiveView?'text-decoration:line-through;color:var(--text-3)':''}">${esc(item.text)}</div>
         ${notes}
-        <div class="item-meta">${catBadge}${typeBadge}${prio}<span class="item-date">${ageStr(item.createdAt)}</span>${src}</div>
+        <div class="item-meta">${catBadge}${typeBadge}${prio}${isArchiveView?archivedDate:`<span class="item-date">${ageStr(item.createdAt)}</span>`}${src}</div>
       </div>
-      <div class="item-actions">
-        <button class="del-btn" onclick="del('${item.id}')" title="Delete" aria-label="Delete item">
-          <svg width="12" height="12" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="2"><path d="M3 8h10"/></svg>
-        </button>
-      </div>
+      <div class="item-actions">${actions}</div>
     </div>
   </div>`;
 }
@@ -468,37 +495,48 @@ function itemHTML(item){
 function render(){
   const all=getFiltered();
   const el=document.getElementById('list');
+  const isArchiveView=filter==='archive';
   if(!all.length){
+    const hint=isArchiveView
+      ?'Items you check off will appear here for future reference.'
+      :'Quick-add above, press ⌘N, or send <code>todo: your task</code> via Telegram';
+    const icon=isArchiveView?'▣':'◈';
+    const title=isArchiveView?'Archive is empty':'Nothing here yet';
     el.innerHTML=`<div class="empty-state">
-      <div class="empty-icon">◈</div>
-      <div class="empty-title">Nothing here yet</div>
-      <div class="empty-hint">Quick-add above, press ⌘N, or send <code>todo: your task</code> via Telegram</div>
+      <div class="empty-icon">${icon}</div>
+      <div class="empty-title">${title}</div>
+      <div class="empty-hint">${hint}</div>
     </div>`;
     return;
   }
-  const active=all.filter(x=>!x.done);
-  const done=all.filter(x=>x.done);
   let html='';
-  if(active.length){
-    html+=`<div class="section-head"><span class="section-head-label">Active · ${active.length}</span><div class="section-head-line"></div></div>`;
-    html+=active.map(itemHTML).join('');
-  }
-  if(done.length){
-    html+=`<div class="section-head"><span class="section-head-label">Completed · ${done.length}</span><div class="section-head-line"></div></div>`;
-    html+=done.map(itemHTML).join('');
+  if(isArchiveView){
+    html+=`<div class="section-head"><span class="section-head-label">Archived · ${all.length}</span><div class="section-head-line"></div></div>`;
+    html+=all.map(i=>itemHTML(i,true)).join('');
+  } else {
+    html+=`<div class="section-head"><span class="section-head-label">Active · ${all.length}</span><div class="section-head-line"></div></div>`;
+    html+=all.map(i=>itemHTML(i,false)).join('');
   }
   el.innerHTML=html;
 }
 
 function updateCounts(){
   const items=load();
-  const c={all:items.length,active:items.filter(x=>!x.done).length,done:items.filter(x=>x.done).length,
-    task:items.filter(x=>x.type==='task').length,idea:items.filter(x=>x.type==='idea').length,
-    note:items.filter(x=>x.type==='note').length,project:items.filter(x=>x.type==='project').length};
+  const active=items.filter(x=>!x.archived);
+  const archived=items.filter(x=>!!x.archived);
+  const c={
+    all:active.length,
+    active:active.filter(x=>!x.done).length,
+    archive:archived.length,
+    task:active.filter(x=>x.type==='task').length,
+    idea:active.filter(x=>x.type==='idea').length,
+    note:active.filter(x=>x.type==='note').length,
+    project:active.filter(x=>x.type==='project').length
+  };
   Object.entries(c).forEach(([k,v])=>{const e=document.getElementById('cnt-'+k);if(e)e.textContent=v;});
   Object.keys(CATS).forEach(k=>{
     const e=document.getElementById('cnt-cat-'+k);
-    if(e)e.textContent=items.filter(x=>(x.category||'general')===k).length;
+    if(e)e.textContent=active.filter(x=>(x.category||'general')===k).length;
   });
 }
 
@@ -567,7 +605,7 @@ function toast(msg){
   clearTimeout(_toastTimer);_toastTimer=setTimeout(()=>el.classList.remove('show'),2800);
 }
 
-/* Migrate old items from v2 key (no category field) */
+/* Migrate old items: v2 key (no category) + mark done items as archived */
 (function migrate(){
   const OLD='claude_notes_v2';
   try{
@@ -577,6 +615,13 @@ function toast(msg){
       const fresh=old.filter(x=>!ids.has(x.id)).map(x=>({...x,category:x.category||'general'}));
       if(fresh.length){save([...fresh,...cur]);localStorage.removeItem(OLD);}
     }
+  }catch{}
+  // Mark any done-but-not-archived items as archived
+  try{
+    const items=load();
+    let changed=false;
+    items.forEach(x=>{if(x.done&&!x.archived){x.archived=true;x.archivedAt=x.updatedAt||x.createdAt;changed=true;}});
+    if(changed)save(items);
   }catch{}
 })();
 
