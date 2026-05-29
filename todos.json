@@ -1,5 +1,18 @@
 [
   {
+    "id": "c-coins-cash",
+    "text": "Take all coins and turn them into cash",
+    "type": "task",
+    "emoji": "🪙",
+    "notes": "Reminder: cash in the loose coins (Coinstar / bank).",
+    "priority": "normal",
+    "category": "errands",
+    "source": "chat",
+    "done": false,
+    "archived": false,
+    "createdAt": "2026-05-29T21:03:04Z"
+  },
+  {
     "id": "tg-013",
     "text": "Turn JB OS into a mobile app (installable via browser / Add to Home Screen)",
     "type": "idea",
