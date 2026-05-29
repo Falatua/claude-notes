@@ -1,0 +1,12 @@
+[
+  { "id": "jpx-1", "text": "What is in your control here, and what are you wasting energy on that isn't?", "category": "wellbeing" },
+  { "id": "jpx-2", "text": "If today were your last, would you be content with how you spent it?", "category": "values" },
+  { "id": "jpx-3", "text": "What thinking trap did you fall into today (all-or-nothing, catastrophizing, mind-reading)?", "category": "growth" },
+  { "id": "jpx-4", "text": "What would you tell a good friend who was in your exact situation today?", "category": "growth" },
+  { "id": "jpx-5", "text": "What did you do today purely because it mattered to you?", "category": "values" },
+  { "id": "jpx-6", "text": "Where did you give your attention to a screen instead of a person?", "category": "relationships" },
+  { "id": "jpx-7", "text": "What's a constraint that's actually making your work better?", "category": "work" },
+  { "id": "jpx-8", "text": "What boundary do you need to set or protect right now?", "category": "wellbeing" },
+  { "id": "jpx-9", "text": "What small win toward a bigger goal can you celebrate today?", "category": "goals" },
+  { "id": "jpx-10", "text": "What are you ready to let go of as you move into tomorrow?", "category": "reflection" }
+]

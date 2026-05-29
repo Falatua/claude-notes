@@ -35,6 +35,7 @@
     --radius:8px;--radius-lg:12px;
     --t:.18s cubic-bezier(.16,1,.3,1);
     --mono:'Geist Mono',ui-monospace,'SFMono-Regular',Menlo,monospace;
+    --serif:'Iowan Old Style','Palatino Linotype',Palatino,Georgia,'Times New Roman',serif;
     --shadow-pop:0 16px 40px -16px rgba(0,0,0,.6);
     --shadow-modal:0 30px 80px -24px rgba(0,0,0,.7);
     color-scheme:dark; /* native date picker, select popups, scrollbars render dark */
@@ -339,6 +340,97 @@
   .due-chip.overdue{color:var(--red);background:var(--red-dim)}
   .due-chip.soon{color:var(--accent);background:var(--accent-dim)}
 
+  /* ===== Journal (distinct calm / editorial surface) ===== */
+  .journal-wrap{max-width:700px;margin:0 auto;padding:8px 0 48px}
+  .journal-head{display:flex;align-items:center;gap:14px;margin:4px 0 8px}
+  .journal-head-meta{flex:1;min-width:0}
+  .journal-head-title{font-family:var(--serif);font-size:23px;font-weight:700;letter-spacing:-.2px;color:var(--text)}
+  .journal-head-sub{font-size:12.5px;color:var(--text-2);margin-top:3px}
+  .journal-streak-chip{display:inline-flex;align-items:center;gap:4px;font-size:11px;font-weight:600;font-family:var(--mono);color:var(--accent);background:var(--accent-dim);padding:2px 8px;border-radius:20px;font-variant-numeric:tabular-nums}
+  .journal-streak-chip.cold{color:var(--text-3);background:var(--surface-hover)}
+  .journal-toolbar{display:flex;align-items:center;gap:8px;margin:14px 0 6px}
+  .journal-feed{margin-top:6px}
+  .j-entry{padding:22px 0 20px;border-top:1px solid var(--border);animation:itemIn .42s cubic-bezier(.16,1,.3,1) both;animation-delay:calc(var(--i,0)*32ms);cursor:pointer;position:relative}
+  .j-entry:first-child{border-top:none}
+  .j-entry:hover .j-entry-edit{opacity:1}
+  .j-entry-top{display:flex;align-items:baseline;gap:10px;flex-wrap:wrap}
+  .j-entry-date{font-family:var(--serif);font-size:19px;font-weight:700;color:var(--text);letter-spacing:-.2px}
+  .j-entry-rel{font-size:11.5px;color:var(--text-3);font-variant-numeric:tabular-nums}
+  .j-entry-edit{margin-left:auto;opacity:0;transition:opacity var(--t);background:none;border:1px solid var(--border-2);color:var(--text-2);border-radius:6px;padding:3px 9px;font-size:11.5px;font-family:inherit;cursor:pointer}
+  .j-entry-edit:hover{color:var(--text);background:var(--surface-hover)}
+  .j-mood-pill{display:inline-flex;align-items:center;gap:5px;font-size:11.5px;font-weight:500;padding:2px 9px;border-radius:20px;white-space:nowrap}
+  .j-mood-pill .m-dot{width:7px;height:7px;border-radius:50%}
+  .j-block{margin-top:15px}
+  .j-block-q{font-family:var(--serif);font-size:15px;font-weight:600;color:var(--text);line-height:1.4;display:flex;align-items:center;gap:7px}
+  .j-block-q .q-dot{width:7px;height:7px;border-radius:50%;flex-shrink:0}
+  .j-block-a{font-family:var(--serif);font-size:15px;line-height:1.78;color:var(--text-2);margin-top:5px;white-space:pre-wrap;word-break:break-word}
+  .j-block-a.free{color:var(--text)}
+  .journal-empty{max-width:520px;margin:34px auto;text-align:center}
+  .journal-empty .je-art{width:52px;height:52px;border-radius:14px;background:var(--surface);border:1px solid var(--border);display:flex;align-items:center;justify-content:center;color:var(--accent);margin:0 auto 14px}
+  .journal-empty h3{font-family:var(--serif);font-size:19px;color:var(--text);font-weight:700;margin-bottom:7px}
+  .journal-empty p{font-size:13px;color:var(--text-2);line-height:1.6;margin-bottom:16px}
+
+  /* Journal composer */
+  .journal-composer{background:var(--surface-modal);border:1px solid var(--border-2);border-radius:16px;width:740px;max-width:100%;max-height:92vh;display:flex;flex-direction:column;box-shadow:var(--shadow-modal)}
+  .jc-header{display:flex;align-items:center;gap:12px;padding:16px 22px;border-bottom:1px solid var(--border);flex-shrink:0;border-radius:16px 16px 0 0;background:var(--surface-modal)}
+  .jc-date{background:var(--surface);border:1px solid var(--border);border-radius:8px;padding:7px 10px;color:var(--text);font-family:var(--mono);font-size:12.5px;outline:none;transition:border-color var(--t)}
+  .jc-date:focus{border-color:var(--accent)}
+  .jc-moods{display:flex;gap:5px;flex-wrap:wrap;flex:1}
+  .j-mood{display:inline-flex;align-items:center;gap:5px;font-size:12px;font-weight:500;padding:4px 10px;border-radius:20px;border:1px solid var(--border-2);background:transparent;color:var(--text-2);cursor:pointer;font-family:inherit;transition:background var(--t),color var(--t),border-color var(--t)}
+  .j-mood .m-dot{width:8px;height:8px;border-radius:50%;background:var(--m-color,var(--text-3))}
+  .j-mood:hover{border-color:var(--m-color);color:var(--text)}
+  .j-mood.sel{border-color:var(--m-color);background:var(--m-dim);color:var(--text)}
+  .jc-body{overflow-y:auto;flex:1}
+  .jc-blocks{padding:6px 24px 2px}
+  .jc-block{padding:16px 0;border-top:1px solid var(--border)}
+  .jc-block:first-child{border-top:none;padding-top:10px}
+  .jc-q-row{display:flex;align-items:flex-start;gap:8px;margin-bottom:6px}
+  .jc-q-text{font-family:var(--serif);font-size:16.5px;font-weight:600;color:var(--text);flex:1;line-height:1.4;display:flex;align-items:center;gap:8px}
+  .jc-q-text .q-dot{width:8px;height:8px;border-radius:50%;flex-shrink:0}
+  .jc-q-text.free{color:var(--text-3);font-style:italic;font-weight:500}
+  .jc-block-del{background:none;border:none;color:var(--text-3);cursor:pointer;padding:3px 7px;border-radius:6px;font-size:13px;font-family:inherit;flex-shrink:0;line-height:1}
+  .jc-block-del:hover{color:var(--red);background:var(--red-dim)}
+  .jc-a{width:100%;background:transparent;border:none;outline:none;color:var(--text);font-family:var(--serif);font-size:15.5px;line-height:1.78;resize:vertical;min-height:64px;padding:0}
+  .jc-a::placeholder{color:var(--text-3);font-style:italic}
+  .jc-toolbar{display:flex;gap:8px;flex-wrap:wrap;padding:12px 24px;border-top:1px solid var(--border);flex-shrink:0;background:var(--surface-modal)}
+  .jc-dd-wrap{position:relative}
+  .jc-menu{position:absolute;bottom:calc(100% + 6px);left:0;width:330px;max-width:80vw;max-height:360px;overflow-y:auto;background:var(--surface-modal);border:1px solid var(--border-2);border-radius:12px;box-shadow:var(--shadow-modal);z-index:20;padding:7px}
+  .jc-menu.hidden{display:none}
+  .jc-menu-search{width:100%;background:var(--surface);border:1px solid var(--border);border-radius:8px;padding:7px 10px;color:var(--text);font-family:inherit;font-size:12.5px;outline:none;margin-bottom:4px}
+  .jc-menu-search:focus{border-color:var(--accent)}
+  .jc-menu-cat{font-size:10px;font-weight:700;text-transform:uppercase;letter-spacing:.07em;color:var(--text-3);padding:9px 8px 3px}
+  .jc-menu-item{display:flex;align-items:center;gap:8px;width:100%;text-align:left;background:none;border:none;color:var(--text);font-family:inherit;font-size:13px;padding:7px 8px;border-radius:7px;cursor:pointer;line-height:1.35}
+  .jc-menu-item:hover{background:var(--surface-hover)}
+  .jc-menu-item .q-dot{width:7px;height:7px;border-radius:50%;flex-shrink:0}
+  .jc-menu-item .q-txt{flex:1}
+  .jc-menu-star{background:none;border:none;cursor:pointer;color:var(--text-3);padding:2px;border-radius:4px;flex-shrink:0;line-height:1;display:flex}
+  .jc-menu-star.on{color:var(--accent)}
+  .jc-menu-star:hover{color:var(--accent)}
+  .jc-menu-empty{font-size:12px;color:var(--text-3);padding:10px 8px;text-align:center}
+  .jc-menu-add{display:flex;flex-direction:column;gap:6px;padding:9px 7px 4px;border-top:1px solid var(--border);margin-top:6px}
+  .jc-menu-add-row{display:flex;gap:6px}
+  .jc-menu-add input{flex:1;background:var(--surface);border:1px solid var(--border);border-radius:7px;padding:7px 9px;color:var(--text);font-family:inherit;font-size:12.5px;outline:none}
+  .jc-menu-add input:focus{border-color:var(--accent)}
+  .jc-menu-add select{background:var(--surface);border:1px solid var(--border);border-radius:7px;padding:0 6px;color:var(--text-2);font-family:inherit;font-size:11.5px;outline:none;cursor:pointer}
+  .jc-actions{display:flex;gap:8px;align-items:center;padding:13px 22px 18px;border-top:1px solid var(--border);flex-shrink:0;background:var(--surface-modal);border-radius:0 0 16px 16px}
+
+  /* Prompt library manager */
+  .pm-add{display:flex;gap:6px;margin-bottom:14px}
+  .pm-add input{flex:1;background:var(--surface);border:1px solid var(--border-2);border-radius:var(--radius);padding:9px 11px;color:var(--text);font-family:inherit;font-size:13px;outline:none}
+  .pm-add input:focus{border-color:var(--accent)}
+  .pm-add select{background:var(--surface);border:1px solid var(--border-2);border-radius:var(--radius);padding:0 8px;color:var(--text-2);font-family:inherit;font-size:12px;outline:none;cursor:pointer}
+  .pm-cat{font-size:10.5px;font-weight:700;text-transform:uppercase;letter-spacing:.06em;color:var(--text-3);padding:13px 2px 5px;display:flex;align-items:center;gap:7px}
+  .pm-cat .q-dot{width:8px;height:8px;border-radius:50%}
+  .pm-row{display:flex;align-items:center;gap:9px;padding:7px 9px;border-radius:8px;font-size:13px;color:var(--text);transition:background var(--t)}
+  .pm-row:hover{background:var(--surface-hover)}
+  .pm-row .pm-q{flex:1;line-height:1.4}
+  .pm-row .jc-menu-star{font-size:13px}
+  .pm-builtin{font-size:9.5px;font-weight:600;text-transform:uppercase;letter-spacing:.05em;color:var(--text-3);background:var(--surface);border:1px solid var(--border);padding:1px 5px;border-radius:4px;flex-shrink:0}
+  .pm-del{background:none;border:none;color:var(--text-3);cursor:pointer;padding:3px 6px;border-radius:5px;font-size:13px;font-family:inherit;flex-shrink:0}
+  .pm-del:hover{color:var(--red);background:var(--red-dim)}
+
+  @media(hover:none){ .j-entry-edit{opacity:1} }
+
   @media(max-width:640px){
     .sidebar{display:none}
     .add-row .add-select:first-child{display:none}
@@ -380,6 +472,10 @@
     <div class="nav-item" id="nav-view-calendar" onclick="setView('calendar')" role="button" tabindex="0">
       <svg class="nav-icon" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><rect x="2" y="3" width="12" height="11" rx="1.5"/><path d="M2 6.5h12M5 2v2M11 2v2"/><rect x="4.5" y="8.5" width="2" height="2" rx=".4" fill="currentColor" stroke="none"/></svg>
       Calendar
+    </div>
+    <div class="nav-item" id="nav-view-journal" onclick="setView('journal')" role="button" tabindex="0">
+      <svg class="nav-icon" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M3.5 2.5H10a1.5 1.5 0 0 1 1.5 1.5v9.5H5A1.5 1.5 0 0 1 3.5 12z"/><path d="M11.5 4H13v9.5M5.5 5.5h3.5M5.5 8h2.5"/></svg>
+      Journal <span class="nav-count" id="cnt-journal">0</span>
     </div>
   </div>
 
@@ -627,6 +723,53 @@
       <div style="flex:1"></div>
       <button class="btn btn-ghost" onclick="closeDetail()">Cancel</button>
       <button class="btn btn-primary" onclick="saveDetail()">Save changes</button>
+    </div>
+  </div>
+</div>
+
+<!-- ===== Journal composer ===== -->
+<div class="backdrop hidden" id="journal-modal" onclick="closeJournalOutside(event)" role="dialog" aria-modal="true" aria-label="Journal entry">
+  <div class="journal-composer" onclick="event.stopPropagation();maybeCloseJMenus(event)">
+    <div class="jc-header">
+      <input type="date" id="j-date" class="jc-date" aria-label="Entry date">
+      <div class="jc-moods" id="j-moods" role="radiogroup" aria-label="How was your day?"></div>
+      <button class="detail-close" onclick="closeJournal()" aria-label="Close">✕</button>
+    </div>
+    <div class="jc-body">
+      <div class="jc-blocks" id="j-blocks"></div>
+    </div>
+    <div class="jc-toolbar">
+      <div class="jc-dd-wrap">
+        <button class="detail-add-btn" id="j-addq-btn" onclick="toggleQuestionMenu(event)" aria-haspopup="true" aria-expanded="false">+ Add a question</button>
+        <div class="jc-menu hidden" id="j-question-menu"></div>
+      </div>
+      <div class="jc-dd-wrap">
+        <button class="detail-add-btn" onclick="toggleTemplateMenu(event)" aria-haspopup="true" aria-expanded="false">Start from a template</button>
+        <div class="jc-menu hidden" id="j-template-menu"></div>
+      </div>
+      <button class="detail-add-btn" onclick="addFreeBlock()">Free write</button>
+    </div>
+    <div class="jc-actions">
+      <button class="btn btn-ghost" style="color:var(--red)" id="j-delete" onclick="deleteJournal()">Delete</button>
+      <div style="flex:1"></div>
+      <button class="btn btn-ghost" onclick="closeJournal()">Cancel</button>
+      <button class="btn btn-primary" onclick="saveJournal()">Save entry</button>
+    </div>
+  </div>
+</div>
+
+<!-- ===== Prompt library manager ===== -->
+<div class="backdrop hidden" id="prompts-modal" onclick="closePromptsOutside(event)" role="dialog" aria-modal="true" aria-label="Journal prompt library">
+  <div class="modal" style="width:580px;max-height:88vh;overflow-y:auto">
+    <div class="modal-title">Prompt library</div>
+    <div class="pm-add">
+      <input id="pm-new-text" placeholder="Write a new journaling question…" autocomplete="off" onkeydown="if(event.key==='Enter')addPromptFromManager()">
+      <select id="pm-new-cat" aria-label="Category"></select>
+      <button class="btn btn-primary" onclick="addPromptFromManager()">Add</button>
+    </div>
+    <div id="pm-list"></div>
+    <div class="modal-actions">
+      <button class="btn btn-ghost" onclick="closePrompts()">Done</button>
     </div>
   </div>
 </div>
@@ -884,6 +1027,7 @@ function updateCounts(){
   try{
     const de=document.getElementById('cnt-daily'); if(de)de.textContent=loadDaily().templates.length;
     const me=document.getElementById('cnt-monthly'); if(me)me.textContent=loadMonthly().templates.length;
+    const je=document.getElementById('cnt-journal'); if(je)je.textContent=jEntries().length;
   }catch{}
 }
 
@@ -1036,9 +1180,9 @@ function closeDetail(){document.getElementById('detail').classList.add('hidden')
 function closeDetailOutside(e){if(e.target.id==='detail')closeDetail();}
 
 document.addEventListener('keydown',e=>{
-  if(e.key==='Escape'){closeModal();closeDetail();}
-  if((e.metaKey||e.ctrlKey)&&e.key==='n'){e.preventDefault();openModal();}
-  if((e.metaKey||e.ctrlKey)&&e.key==='f'){e.preventDefault();document.getElementById('search').focus();}
+  if(e.key==='Escape'){if(!document.getElementById('journal-modal').classList.contains('hidden')&&(!document.getElementById('j-question-menu').classList.contains('hidden')||!document.getElementById('j-template-menu').classList.contains('hidden'))){closeAllJMenus();return;}closeModal();closeDetail();closeJournal();closePrompts();}
+  if((e.metaKey||e.ctrlKey)&&e.key==='n'){e.preventDefault();view==='journal'?newJournalEntry():openModal();}
+  if((e.metaKey||e.ctrlKey)&&e.key==='f'&&view==='list'){e.preventDefault();document.getElementById('search').focus();}
   if((e.key==='Enter'||e.key===' ')&&e.target&&e.target.classList&&e.target.classList.contains('nav-item')){e.preventDefault();e.target.click();}
 });
 
@@ -1244,13 +1388,16 @@ function delRoutine(scope,id){
 }
 
 /* ===== View switching ===== */
-function syncWorkspaceNav(v){['list','daily','monthly','calendar'].forEach(k=>{const e=document.getElementById('nav-view-'+k);if(e)e.classList.toggle('active',k===v);});}
+function syncWorkspaceNav(v){['list','daily','monthly','calendar','journal'].forEach(k=>{const e=document.getElementById('nav-view-'+k);if(e)e.classList.toggle('active',k===v);});}
 function applyViewChrome(v){
   const sw=document.getElementById('search-wrap'), aa=document.getElementById('add-area'), qt=document.getElementById('quick-type'), qi=document.getElementById('quick-input');
   if(v==='list'){sw.style.display='';aa.style.display='';qt.style.display='';qi.placeholder='Quick add — press Enter to save';}
   else if(v==='daily'){sw.style.display='none';aa.style.display='';qt.style.display='none';qi.placeholder='Add a daily habit (e.g. Stretch 10 min) — Enter to save';}
   else if(v==='monthly'){sw.style.display='none';aa.style.display='';qt.style.display='none';qi.placeholder='Add a monthly item — Enter to save';}
   else if(v==='calendar'){sw.style.display='none';aa.style.display='none';}
+  else if(v==='journal'){sw.style.display='none';aa.style.display='none';}
+  // Task action buttons (Import/Export/New Item) only apply to the list views; hide in the journal's calm space
+  const ha=document.querySelector('.header-actions');if(ha)ha.style.display=(v==='journal')?'none':'';
 }
 function setView(v){
   if(v==='list'){view='list';applyViewChrome('list');setFilter(filter,filterMode);updateCounts();return;}
@@ -1272,6 +1419,7 @@ function renderView(){
   if(view==='daily')renderRoutine('daily');
   else if(view==='monthly')renderRoutine('monthly');
   else if(view==='calendar')renderCalendar();
+  else if(view==='journal')renderJournal();
 }
 
 /* ===== Routine rendering ===== */
@@ -1404,11 +1552,295 @@ function icsFold(l){if(l.length<=75)return l;let o=l.slice(0,75),r=l.slice(75);w
 function exportICS(){const blob=new Blob([buildICS()],{type:'text/calendar'});const a=document.createElement('a');a.href=URL.createObjectURL(blob);a.download='jbos-calendar.ics';a.click();toast('Exported .ics');}
 function copyFeed(){try{navigator.clipboard.writeText('https://falatua.github.io/claude-notes/calendar.ics');toast('Feed URL copied');}catch{toast('Copy failed — select the URL manually');}}
 
+/* ===== Journal ===== */
+const JKEY='jbos_journal_v1';
+const JCATS={
+  reflection:{label:'Reflection',color:'#5b9df6'},
+  gratitude:{label:'Gratitude',color:'#fbbf24'},
+  growth:{label:'Growth & Learning',color:'#46d489'},
+  wellbeing:{label:'Wellbeing & Mind',color:'#2dd4bf'},
+  goals:{label:'Goals & Habits',color:'#fb923c'},
+  relationships:{label:'Relationships',color:'#f06cab'},
+  work:{label:'Work & Creativity',color:'#a78bfa'},
+  values:{label:'Values & Purpose',color:'#e8a020'},
+  freeform:{label:'Freeform',color:'#8a8a97'}
+};
+const JMOODS=[
+  {id:'great',label:'Great',color:'#46d489',dim:'rgba(70,212,137,.16)'},
+  {id:'good',label:'Good',color:'#2dd4bf',dim:'rgba(45,212,191,.16)'},
+  {id:'okay',label:'Okay',color:'#fbbf24',dim:'rgba(251,191,36,.16)'},
+  {id:'low',label:'Low',color:'#fb923c',dim:'rgba(251,146,60,.16)'},
+  {id:'rough',label:'Rough',color:'#f4756f',dim:'rgba(244,117,111,.16)'}
+];
+const J_STAR='<svg width="12" height="12" viewBox="0 0 16 16" fill="currentColor"><path d="M8 1.7l1.8 3.8 4.2.6-3 3 .7 4.1L8 11.9 4.3 13.2l.7-4.1-3-3 4.2-.6z"/></svg>';
+const J_FLAME='<svg width="11" height="11" viewBox="0 0 16 16" fill="currentColor" style="margin-right:1px"><path d="M8 1.3s.4 2.1 1.9 3.6C11.6 6.6 12.5 8 12.5 9.7a4.5 4.5 0 0 1-9 0c0-1 .4-1.9 1-2.6.2 1 .9 1.5 1.6 1.5C4.6 6 8 6 8 1.3z"/></svg>';
+
+const BUILTIN_PROMPTS=[
+  {id:'jp-r1',text:'What went well today?',category:'reflection'},
+  {id:'jp-r2',text:'What can you do better tomorrow?',category:'reflection'},
+  {id:'jp-r3',text:'What did you learn today?',category:'reflection'},
+  {id:'jp-r4',text:"What was hard or didn't go the way you wanted?",category:'reflection'},
+  {id:'jp-r5',text:"What's one thing you're proud of today?",category:'reflection'},
+  {id:'jp-r6',text:'What surprised you today?',category:'reflection'},
+  {id:'jp-r7',text:'If today had a title, what would it be?',category:'reflection'},
+  {id:'jp-r8',text:'What do you want to carry into tomorrow?',category:'reflection'},
+  {id:'jp-g1',text:'What are three good things that happened today, and why?',category:'gratitude'},
+  {id:'jp-g2',text:'Who are you grateful for right now, and why?',category:'gratitude'},
+  {id:'jp-g3',text:"What's something ordinary you'd miss if it were gone?",category:'gratitude'},
+  {id:'jp-g4',text:"What went right today that you'd normally overlook?",category:'gratitude'},
+  {id:'jp-g5',text:'What are you looking forward to, and why does it matter?',category:'gratitude'},
+  {id:'jp-gr1',text:"What mistake did you make, and what's the lesson in it?",category:'growth'},
+  {id:'jp-gr2',text:"What's a belief you're starting to question?",category:'growth'},
+  {id:'jp-gr3',text:'Where did you step outside your comfort zone today?',category:'growth'},
+  {id:'jp-gr4',text:'What feedback is worth acting on?',category:'growth'},
+  {id:'jp-gr5',text:'Even better if… what would make a recent effort stronger next time?',category:'growth'},
+  {id:'jp-w1',text:'How are you actually feeling right now, in one honest sentence?',category:'wellbeing'},
+  {id:'jp-w2',text:"What's draining your energy, and what's restoring it?",category:'wellbeing'},
+  {id:'jp-w3',text:"What's worrying you, and how much of it is in your control?",category:'wellbeing'},
+  {id:'jp-w4',text:'What would help you feel 10% better tonight?',category:'wellbeing'},
+  {id:'jp-w5',text:'What kind thing could you say to yourself right now?',category:'wellbeing'},
+  {id:'jp-go1',text:"What's your most important goal right now, and the next concrete step?",category:'goals'},
+  {id:'jp-go2',text:'Which habits did you keep today, and which did you miss?',category:'goals'},
+  {id:'jp-go3',text:"What's one small win toward something bigger?",category:'goals'},
+  {id:'jp-go4',text:'Are you making progress on what matters, or just staying busy?',category:'goals'},
+  {id:'jp-go5',text:"What's one thing you'll commit to tomorrow?",category:'goals'},
+  {id:'jp-re1',text:'Who did you connect with today, and how did it feel?',category:'relationships'},
+  {id:'jp-re2',text:'Who could use a kind word or check-in from you this week?',category:'relationships'},
+  {id:'jp-re3',text:'How did you show up for the people who matter to you today?',category:'relationships'},
+  {id:'jp-re4',text:"What conversation are you avoiding, and what's the cost?",category:'relationships'},
+  {id:'jp-wk1',text:'What was the most meaningful thing you worked on today?',category:'work'},
+  {id:'jp-wk2',text:'What pulled your focus away from what mattered most?',category:'work'},
+  {id:'jp-wk3',text:'When did you feel "in flow" today, and what were you doing?',category:'work'},
+  {id:'jp-wk4',text:'What did you make or ship today, however small?',category:'work'},
+  {id:'jp-wk5',text:"What would make tomorrow's work feel like a win?",category:'work'},
+  {id:'jp-v1',text:'When did you feel most like yourself recently, and why?',category:'values'},
+  {id:'jp-v2',text:'Where is the gap between what you say matters and how you spend your time?',category:'values'},
+  {id:'jp-v3',text:"What would you do if you knew you couldn't fail?",category:'values'},
+  {id:'jp-v4',text:'What do you want to be remembered for?',category:'values'},
+  {id:'jp-f1',text:"What's on your mind right now?",category:'freeform'},
+  {id:'jp-f2',text:'What do you want to remember about today?',category:'freeform'}
+];
+
+const BUILTIN_DECKS=[
+  {id:'deck-classic',label:'Classic end-of-day',items:[
+    {q:'What went well today?',cat:'reflection'},
+    {q:"What was hard or didn't go the way you wanted?",cat:'reflection'},
+    {q:'What did you learn today?',cat:'reflection'},
+    {q:'What can you do better tomorrow?',cat:'reflection'}]},
+  {id:'deck-fmj-am',label:'Five Minute Journal — Morning',items:[
+    {q:'I am grateful for…',cat:'gratitude'},
+    {q:'What would make today great?',cat:'goals'},
+    {q:'Daily affirmation: I am…',cat:'wellbeing'}]},
+  {id:'deck-fmj-pm',label:'Five Minute Journal — Evening',items:[
+    {q:'3 amazing things that happened today',cat:'gratitude'},
+    {q:'How could I have made today better?',cat:'reflection'}]},
+  {id:'deck-stoic',label:'Stoic evening reflection',items:[
+    {q:'What did I do well today?',cat:'reflection'},
+    {q:'Where did I fall short, and why?',cat:'growth'},
+    {q:'What will I do differently next time?',cat:'growth'}]},
+  {id:'deck-www',label:'What went well / Even better if',items:[
+    {q:'What went well today?',cat:'reflection'},
+    {q:'Even better if…',cat:'growth'}]},
+  {id:'deck-gratitude',label:'Gratitude check-in',items:[
+    {q:'What are three good things that happened today, and why?',cat:'gratitude'},
+    {q:'Who are you grateful for right now, and why?',cat:'gratitude'}]}
+];
+
+function jLoad(){try{const o=JSON.parse(localStorage.getItem(JKEY));return o&&Array.isArray(o.prompts)&&Array.isArray(o.entries)?o:{prompts:[],entries:[]};}catch{return{prompts:[],entries:[]};}}
+function jSave(o){localStorage.setItem(JKEY,JSON.stringify(o));}
+function jPrompts(){return jLoad().prompts;}
+function jEntries(){return jLoad().entries.slice().sort((a,b)=>(b.date||'').localeCompare(a.date||'')||(b.createdAt||'').localeCompare(a.createdAt||''));}
+function jCat(c){return JCATS[c]||JCATS.freeform;}
+function moodById(id){return JMOODS.find(m=>m.id===id);}
+function findPromptIdByText(t){const p=jPrompts().find(x=>x.text.toLowerCase()===(t||'').toLowerCase());return p?p.id:null;}
+function buildJCatOptionsHTML(){return Object.keys(JCATS).map(k=>'<option value="'+k+'">'+JCATS[k].label+'</option>').join('');}
+
+function ensureJournalSeed(){
+  const store=jLoad();const ids=new Set(store.prompts.map(p=>p.id));let added=false;
+  BUILTIN_PROMPTS.forEach(p=>{if(!ids.has(p.id)){store.prompts.push(Object.assign({favorite:false,builtin:true,createdAt:new Date().toISOString()},p));added=true;}});
+  if(added)jSave(store);
+}
+function fetchJournalSeeds(){
+  fetch('journal-prompts.json?v='+Date.now()).then(r=>r.ok?r.json():Promise.reject()).then(seeds=>{
+    if(!Array.isArray(seeds)||!seeds.length)return;
+    const store=jLoad();const ids=new Set(store.prompts.map(p=>p.id));
+    const fresh=seeds.filter(s=>s&&s.id&&!ids.has(s.id)).map(s=>Object.assign({category:'freeform',builtin:true,favorite:false,createdAt:new Date().toISOString()},s));
+    if(fresh.length){store.prompts=store.prompts.concat(fresh);jSave(store);if(view==='journal')render();updateCounts();}
+  }).catch(()=>{});
+}
+
+function journalStreak(){
+  const dates=new Set(jEntries().map(e=>e.date));
+  const now=new Date();let cur=new Date(now.getFullYear(),now.getMonth(),now.getDate());let s=0;
+  if(!dates.has(dateKey(cur)))cur.setDate(cur.getDate()-1);
+  while(dates.has(dateKey(cur))){s++;cur.setDate(cur.getDate()-1);}
+  return s;
+}
+function jRelDate(d){
+  const today=new Date();const t0=new Date(today.getFullYear(),today.getMonth(),today.getDate());
+  const p=(d||'').split('-').map(Number);if(p.length<3)return '';
+  const ed=new Date(p[0],p[1]-1,p[2]);const diff=Math.round((t0-ed)/86400000);
+  if(diff===0)return 'Today';if(diff===1)return 'Yesterday';if(diff>1&&diff<7)return diff+' days ago';if(diff<0)return 'Upcoming';return '';
+}
+function jFullDate(d){const p=(d||'').split('-').map(Number);if(p.length<3)return d||'';const dt=new Date(p[0],p[1]-1,p[2]);const opt={weekday:'long',month:'long',day:'numeric'};if(dt.getFullYear()!==new Date().getFullYear())opt.year='numeric';return dt.toLocaleDateString('en-US',opt);}
+function moodPillHTML(id){const m=moodById(id);if(!m)return '';return '<span class="j-mood-pill" style="background:'+m.dim+';color:'+m.color+'"><span class="m-dot" style="background:'+m.color+'"></span>'+m.label+'</span>';}
+
+function renderJournal(){
+  setTitle('Journal',null);
+  const entries=jEntries();const s=journalStreak();
+  const streakChip=s>0?'<span class="journal-streak-chip">'+J_FLAME+s+'-day streak</span>':'<span class="journal-streak-chip cold">Start your streak today</span>';
+  let html='<div class="journal-wrap"><div class="journal-toolbar">'+streakChip
+    +'<span style="font-size:12.5px;color:var(--text-3)">'+entries.length+' '+(entries.length===1?'entry':'entries')+'</span>'
+    +'<div style="flex:1"></div><button class="btn btn-ghost" onclick="openPrompts()">Prompts</button>'
+    +'<button class="btn btn-primary" onclick="newJournalEntry()"><svg width="12" height="12" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M8 2v12M2 8h12"/></svg> New entry</button></div>';
+  if(!entries.length){
+    html+='<div class="journal-empty"><div class="je-art"><svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M5 3.5h9a2 2 0 0 1 2 2V20H7a2 2 0 0 1-2-2z"/><path d="M16 6.5h2.5V20M8.5 8h5M8.5 11.5h5M8.5 15h3"/></svg></div><h3>Your journal starts here</h3><p>Reflect on your day by picking from the question library, starting from a proven template, or simply writing freely. Answer one question or stack several. The library grows as you add your own.</p><button class="btn btn-primary" onclick="newJournalEntry()">Write your first entry</button></div>';
+  } else {
+    html+='<div class="journal-feed">'+entries.map((e,idx)=>journalEntryHTML(e,idx)).join('')+'</div>';
+  }
+  html+='</div>';
+  document.getElementById('list').innerHTML=html;
+}
+function journalEntryHTML(e,idx){
+  const blocks=(e.blocks||[]).map(b=>{
+    if(b.free||!(b.q||'').trim())return '<div class="j-block"><div class="j-block-a free">'+esc(b.a||'')+'</div></div>';
+    const c=jCat(b.cat);
+    return '<div class="j-block"><div class="j-block-q"><span class="q-dot" style="background:'+c.color+'"></span>'+esc(b.q)+'</div><div class="j-block-a">'+esc(b.a||'')+'</div></div>';
+  }).join('');
+  return '<div class="j-entry" style="--i:'+Math.min(idx,16)+'" role="button" tabindex="0" onclick="openJournal(\''+e.id+'\')" onkeydown="if(event.key===\'Enter\'){openJournal(\''+e.id+'\');event.preventDefault()}" aria-label="Open entry from '+esc(jFullDate(e.date))+'">'
+    +'<div class="j-entry-top"><span class="j-entry-date">'+esc(jFullDate(e.date))+'</span>'
+    +(jRelDate(e.date)?'<span class="j-entry-rel">'+jRelDate(e.date)+'</span>':'')
+    +moodPillHTML(e.mood)
+    +'<button class="j-entry-edit" onclick="event.stopPropagation();openJournal(\''+e.id+'\')">Edit</button></div>'
+    +blocks+'</div>';
+}
+
+/* Composer */
+let _jEditId=null,_jBlocks=[],_jMood=null;
+function newJournalEntry(){
+  _lastFocus=document.activeElement;_jEditId=null;_jBlocks=[];_jMood=null;
+  document.getElementById('j-date').value=dateKey(new Date());
+  document.getElementById('j-delete').style.display='none';
+  renderMoods();renderComposerBlocks();closeAllJMenus();
+  document.getElementById('journal-modal').classList.remove('hidden');
+}
+function openJournal(id){
+  const e=jEntries().find(x=>x.id===id);if(!e)return;
+  _lastFocus=document.activeElement;_jEditId=id;_jMood=e.mood||null;
+  _jBlocks=(e.blocks||[]).map(b=>({q:b.q||'',a:b.a||'',cat:b.cat||'freeform',promptId:b.promptId||null,free:!!b.free||!(b.q||'').trim()}));
+  document.getElementById('j-date').value=e.date||dateKey(new Date());
+  document.getElementById('j-delete').style.display='';
+  renderMoods();renderComposerBlocks();closeAllJMenus();
+  document.getElementById('journal-modal').classList.remove('hidden');
+}
+function renderMoods(){
+  document.getElementById('j-moods').innerHTML=JMOODS.map(m=>'<button class="j-mood'+(_jMood===m.id?' sel':'')+'" style="--m-color:'+m.color+';--m-dim:'+m.dim+'" role="radio" aria-checked="'+(_jMood===m.id)+'" onclick="setMood(\''+m.id+'\')"><span class="m-dot"></span>'+m.label+'</button>').join('');
+}
+function setMood(id){_jMood=_jMood===id?null:id;renderMoods();}
+function syncBlockAnswers(){document.querySelectorAll('#j-blocks .jc-block').forEach((el,i)=>{const ta=el.querySelector('.jc-a');if(ta&&_jBlocks[i])_jBlocks[i].a=ta.value;});}
+function renderComposerBlocks(){
+  const wrap=document.getElementById('j-blocks');
+  if(!_jBlocks.length){wrap.innerHTML='<div style="font-family:var(--serif);font-style:italic;color:var(--text-3);font-size:14.5px;padding:20px 2px 16px;line-height:1.6">Pick a question, start from a template, or free write to begin.</div>';return;}
+  wrap.innerHTML=_jBlocks.map((b,i)=>{
+    const free=b.free||!(b.q||'').trim();
+    const qrow=free
+      ?'<div class="jc-q-row"><div class="jc-q-text free">Free writing</div><button class="jc-block-del" onclick="removeBlock('+i+')" aria-label="Remove">✕</button></div>'
+      :'<div class="jc-q-row"><div class="jc-q-text"><span class="q-dot" style="background:'+jCat(b.cat).color+'"></span>'+esc(b.q)+'</div><button class="jc-block-del" onclick="removeBlock('+i+')" aria-label="Remove">✕</button></div>';
+    return '<div class="jc-block">'+qrow+'<textarea class="jc-a" placeholder="'+(free?'Write freely…':'Write your answer…')+'" aria-label="'+(free?'Free writing':esc(b.q))+'">'+esc(b.a||'')+'</textarea></div>';
+  }).join('');
+}
+function addBlockFromPrompt(id){const p=jPrompts().find(x=>x.id===id);if(!p)return;syncBlockAnswers();_jBlocks.push({q:p.text,a:'',cat:p.category||'freeform',promptId:p.id,free:false});closeAllJMenus();renderComposerBlocks();focusLastBlock();}
+function addFreeBlock(){syncBlockAnswers();_jBlocks.push({q:'',a:'',cat:'freeform',promptId:null,free:true});closeAllJMenus();renderComposerBlocks();focusLastBlock();}
+function removeBlock(i){syncBlockAnswers();_jBlocks.splice(i,1);renderComposerBlocks();}
+function focusLastBlock(){const tas=document.querySelectorAll('#j-blocks .jc-a');if(tas.length)tas[tas.length-1].focus();}
+
+/* Question picker menu */
+function toggleQuestionMenu(e){e.stopPropagation();const m=document.getElementById('j-question-menu');const wasOpen=!m.classList.contains('hidden');closeAllJMenus();if(!wasOpen){renderQuestionMenu();m.classList.remove('hidden');document.getElementById('j-addq-btn').setAttribute('aria-expanded','true');const s=document.getElementById('jq-search');if(s)setTimeout(()=>s.focus(),30);}}
+function renderQuestionMenu(){
+  document.getElementById('j-question-menu').innerHTML='<input class="jc-menu-search" id="jq-search" placeholder="Search prompts…" autocomplete="off" oninput="renderQuestionList(this.value)">'
+    +'<div id="jq-list"></div>'
+    +'<div class="jc-menu-add"><div class="jc-menu-add-row"><input id="jq-new" placeholder="Write your own question…" autocomplete="off" onkeydown="if(event.key===\'Enter\'){event.preventDefault();addQuestionFromMenu()}"><select id="jq-new-cat" aria-label="Category">'+buildJCatOptionsHTML()+'</select></div><button class="detail-add-btn" style="width:100%;justify-content:center" onclick="addQuestionFromMenu()">+ Add to library &amp; insert</button></div>';
+  renderQuestionList('');
+}
+function renderQuestionList(q){
+  const list=document.getElementById('jq-list');if(!list)return;
+  const ps=jPrompts();const query=(q||'').toLowerCase().trim();
+  const matched=ps.filter(p=>!query||p.text.toLowerCase().includes(query));
+  if(!matched.length){list.innerHTML='<div class="jc-menu-empty">No matches — add it as a new question below.</div>';return;}
+  let html='';
+  if(!query){const favs=ps.filter(p=>p.favorite);if(favs.length){html+='<div class="jc-menu-cat">Favorites</div>'+favs.map(qMenuItem).join('');}}
+  Object.keys(JCATS).forEach(cat=>{const inCat=matched.filter(p=>(p.category||'freeform')===cat);if(!inCat.length)return;html+='<div class="jc-menu-cat">'+JCATS[cat].label+'</div>'+inCat.map(qMenuItem).join('');});
+  list.innerHTML=html;
+}
+function qMenuItem(p){const c=jCat(p.category);return '<div class="jc-menu-item" role="button" tabindex="0" onclick="addBlockFromPrompt(\''+p.id+'\')" onkeydown="if(event.key===\'Enter\'){addBlockFromPrompt(\''+p.id+'\')}"><span class="q-dot" style="background:'+c.color+'"></span><span class="q-txt">'+esc(p.text)+'</span><button class="jc-menu-star '+(p.favorite?'on':'')+'" onclick="event.stopPropagation();toggleFav(\''+p.id+'\')" aria-label="Toggle favorite">'+J_STAR+'</button></div>';}
+function addQuestionFromMenu(){
+  const inp=document.getElementById('jq-new'),sel=document.getElementById('jq-new-cat');if(!inp)return;
+  const text=inp.value.trim();if(!text){toast('Type a question first');return;}
+  const store=jLoad();const p={id:uid(),text,category:sel.value||'freeform',builtin:false,favorite:false,createdAt:new Date().toISOString()};
+  store.prompts.push(p);jSave(store);
+  syncBlockAnswers();_jBlocks.push({q:p.text,a:'',cat:p.category,promptId:p.id,free:false});
+  closeAllJMenus();renderComposerBlocks();focusLastBlock();updateCounts();toast('Question added to your library');
+}
+function toggleFav(id){const store=jLoad();const p=store.prompts.find(x=>x.id===id);if(!p)return;p.favorite=!p.favorite;jSave(store);
+  const qm=document.getElementById('j-question-menu');if(qm&&!qm.classList.contains('hidden')){const s=document.getElementById('jq-search');renderQuestionList(s?s.value:'');}
+  const pm=document.getElementById('prompts-modal');if(pm&&!pm.classList.contains('hidden'))renderPromptList();
+}
+
+/* Template menu */
+function toggleTemplateMenu(e){e.stopPropagation();const m=document.getElementById('j-template-menu');const wasOpen=!m.classList.contains('hidden');closeAllJMenus();if(!wasOpen){renderTemplateMenu();m.classList.remove('hidden');}}
+function renderTemplateMenu(){
+  document.getElementById('j-template-menu').innerHTML='<div class="jc-menu-cat">Templates</div>'+BUILTIN_DECKS.map(d=>'<div class="jc-menu-item" role="button" tabindex="0" onclick="applyDeck(\''+d.id+'\')" onkeydown="if(event.key===\'Enter\'){applyDeck(\''+d.id+'\')}"><span class="q-txt"><span style="font-weight:600">'+esc(d.label)+'</span><br><span style="color:var(--text-3);font-size:11px">'+d.items.length+' questions</span></span></div>').join('');
+}
+function applyDeck(id){const d=BUILTIN_DECKS.find(x=>x.id===id);if(!d)return;syncBlockAnswers();d.items.forEach(it=>_jBlocks.push({q:it.q,a:'',cat:it.cat||'reflection',promptId:findPromptIdByText(it.q),free:false}));closeAllJMenus();renderComposerBlocks();toast('Added "'+d.label+'"');}
+function closeAllJMenus(){['j-question-menu','j-template-menu'].forEach(id=>{const m=document.getElementById(id);if(m)m.classList.add('hidden');});const b=document.getElementById('j-addq-btn');if(b)b.setAttribute('aria-expanded','false');}
+function maybeCloseJMenus(e){if(!e.target.closest('.jc-dd-wrap'))closeAllJMenus();}
+
+function saveJournal(){
+  syncBlockAnswers();
+  const kept=_jBlocks.filter(b=>(b.a||'').trim()!=='').map(b=>({q:(b.free?'':b.q)||'',a:b.a.trim(),cat:b.cat||'freeform',promptId:b.promptId||null,free:!!b.free||!(b.q||'').trim()}));
+  const date=document.getElementById('j-date').value||dateKey(new Date());
+  if(!kept.length&&!_jMood){toast('Write something or pick how your day felt');return;}
+  const store=jLoad();const now=new Date().toISOString();
+  if(_jEditId){const i=store.entries.findIndex(x=>x.id===_jEditId);if(i>=0)store.entries[i]=Object.assign({},store.entries[i],{date,mood:_jMood,blocks:kept,updatedAt:now});}
+  else store.entries.unshift({id:uid(),date,mood:_jMood,blocks:kept,createdAt:now,updatedAt:now});
+  jSave(store);closeJournal();render();updateCounts();
+  const s=journalStreak();toast(s>1?'Saved — '+s+'-day streak':'Entry saved');
+}
+function deleteJournal(){
+  if(!_jEditId)return;if(!confirm('Delete this journal entry permanently?'))return;
+  const store=jLoad();store.entries=store.entries.filter(x=>x.id!==_jEditId);jSave(store);
+  closeJournal();render();updateCounts();toast('Entry deleted');
+}
+function closeJournal(){closeAllJMenus();document.getElementById('journal-modal').classList.add('hidden');_jEditId=null;_jBlocks=[];_jMood=null;restoreFocus();}
+function closeJournalOutside(e){if(e.target.id==='journal-modal')closeJournal();}
+
+/* Prompt library manager */
+function openPrompts(){_lastFocus=document.activeElement;const s=document.getElementById('pm-new-cat');if(s)s.innerHTML=buildJCatOptionsHTML();renderPromptList();document.getElementById('prompts-modal').classList.remove('hidden');}
+function renderPromptList(){
+  const ps=jPrompts();let html='';
+  Object.keys(JCATS).forEach(cat=>{
+    const inCat=ps.filter(p=>(p.category||'freeform')===cat);if(!inCat.length)return;
+    html+='<div class="pm-cat"><span class="q-dot" style="background:'+JCATS[cat].color+'"></span>'+JCATS[cat].label+' <span style="color:var(--text-3);font-weight:500">'+inCat.length+'</span></div>';
+    html+=inCat.map(p=>'<div class="pm-row"><button class="jc-menu-star '+(p.favorite?'on':'')+'" onclick="toggleFav(\''+p.id+'\')" aria-label="Toggle favorite">'+J_STAR+'</button><span class="pm-q">'+esc(p.text)+'</span>'+(p.builtin?'<span class="pm-builtin">default</span>':'<button class="pm-del" onclick="delPrompt(\''+p.id+'\')" aria-label="Delete question">✕</button>')+'</div>').join('');
+  });
+  document.getElementById('pm-list').innerHTML=html;
+}
+function addPromptFromManager(){
+  const inp=document.getElementById('pm-new-text'),sel=document.getElementById('pm-new-cat');const text=inp.value.trim();if(!text){toast('Type a question first');return;}
+  const store=jLoad();store.prompts.push({id:uid(),text,category:sel.value||'freeform',builtin:false,favorite:false,createdAt:new Date().toISOString()});jSave(store);
+  inp.value='';renderPromptList();updateCounts();toast('Question added to your library');
+}
+function delPrompt(id){const store=jLoad();const p=store.prompts.find(x=>x.id===id);if(!p||p.builtin)return;if(!confirm('Remove this question from your library?'))return;store.prompts=store.prompts.filter(x=>x.id!==id);jSave(store);renderPromptList();toast('Question removed');}
+function closePrompts(){document.getElementById('prompts-modal').classList.add('hidden');restoreFocus();}
+function closePromptsOutside(e){if(e.target.id==='prompts-modal')closePrompts();}
+
 /* Init */
 buildCatOptions('quick-cat');
 buildCatOptions('m-cat');
 buildCatOptions('d-cat');
 buildCatNav();
+ensureJournalSeed();
+fetchJournalSeeds();
 if(load().length)_booting=false;
 render();
 updateCounts();
