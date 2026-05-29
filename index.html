@@ -1333,11 +1333,22 @@ function toast(msg){
     var scope=pair[0], file=pair[1];
     fetch(file+'?v='+Date.now()).then(function(r){return r.ok?r.json():Promise.reject();}).then(function(seeds){
       if(!Array.isArray(seeds)||!seeds.length)return;
-      var store=rStore(scope), ids=new Set(store.templates.map(function(t){return t.id;}));
-      var fresh=seeds.filter(function(s){return s&&s.id&&!ids.has(s.id);}).map(function(s){
-        return Object.assign({notes:'',priority:'normal',type:'task',category:'general',createdAt:new Date().toISOString()}, s);
+      var store=rStore(scope), byId={}; store.templates.forEach(function(t){byId[t.id]=t;});
+      var changed=false;
+      seeds.forEach(function(s){
+        if(!s||!s.id)return;
+        var ex=byId[s.id];
+        if(!ex){
+          store.templates.push(Object.assign({notes:'',priority:'normal',type:'task',category:'general',createdAt:new Date().toISOString()}, s));
+          changed=true;
+        } else {
+          // Seed file is source of truth for these fields; streak log is keyed by id, so history is preserved
+          ['text','emoji','category','priority','notes'].forEach(function(k){
+            if(s[k]!==undefined && ex[k]!==s[k]){ex[k]=s[k];changed=true;}
+          });
+        }
       });
-      if(fresh.length){store.templates=store.templates.concat(fresh);rSave(scope,store);if(view===scope)render();updateCounts();}
+      if(changed){rSave(scope,store);if(view===scope)render();updateCounts();}
     }).catch(function(){});
   });
 })();
