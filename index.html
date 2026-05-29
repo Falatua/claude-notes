@@ -200,6 +200,24 @@
   <div class="sb-divider"></div>
 
   <div class="sb-section">
+    <div class="sb-label">Priority</div>
+    <div class="nav-item" id="nav-prio-high" onclick="setFilter('high','prio')" role="button" tabindex="0">
+      <svg class="nav-icon" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><circle cx="8" cy="8" r="5" fill="var(--red)" stroke="none" opacity=".85"/></svg>
+      <span style="color:var(--red)">High</span> <span class="nav-count" id="cnt-prio-high">0</span>
+    </div>
+    <div class="nav-item" id="nav-prio-normal" onclick="setFilter('normal','prio')" role="button" tabindex="0">
+      <svg class="nav-icon" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><circle cx="8" cy="8" r="5" fill="var(--text-3)" stroke="none" opacity=".7"/></svg>
+      Normal <span class="nav-count" id="cnt-prio-normal">0</span>
+    </div>
+    <div class="nav-item" id="nav-prio-low" onclick="setFilter('low','prio')" role="button" tabindex="0">
+      <svg class="nav-icon" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><circle cx="8" cy="8" r="5" fill="var(--text-3)" stroke="none" opacity=".35"/></svg>
+      Low <span class="nav-count" id="cnt-prio-low">0</span>
+    </div>
+  </div>
+
+  <div class="sb-divider"></div>
+
+  <div class="sb-section">
     <div class="sb-label">Life Areas</div>
     <div id="cat-nav"></div>
   </div>
@@ -416,8 +434,12 @@ function setFilter(f, mode){
   const dot=document.getElementById('page-title-dot');
   if(mode==='cat'&&cat){
     dot.style.display='block';dot.style.background=cat.color;
-    document.getElementById('page-title').childNodes[cat?0:0];
     document.getElementById('page-title').lastChild.textContent=' '+cat.label;
+  } else if(mode==='prio'){
+    const prioColors={high:'var(--red)',normal:'var(--text-2)',low:'var(--text-3)'};
+    const prioTitles={high:'High Priority',normal:'Normal Priority',low:'Low Priority'};
+    dot.style.display='block';dot.style.background=prioColors[f]||'var(--text-3)';
+    document.getElementById('page-title').lastChild.textContent=' '+prioTitles[f];
   } else {
     dot.style.display='none';
     const titles={all:'All Items',active:'Active Items',archive:'Archive',task:'Tasks',idea:'Ideas',note:'Notes',project:'Projects'};
@@ -426,9 +448,14 @@ function setFilter(f, mode){
   render();
 }
 
+const PRIO_ORDER={high:0,normal:1,low:2};
+function sortByPriority(arr){
+  return arr.slice().sort((a,b)=>(PRIO_ORDER[a.priority]??1)-(PRIO_ORDER[b.priority]??1));
+}
+
 function getFiltered(){
   const q=(document.getElementById('search')?.value||'').toLowerCase();
-  return load().filter(item=>{
+  const items=load().filter(item=>{
     const mq=!q||item.text.toLowerCase().includes(q)||(item.notes||'').toLowerCase().includes(q);
     const isArchived=!!item.archived;
     let mf;
@@ -439,11 +466,14 @@ function getFiltered(){
       else mf=false;
     } else if(filterMode==='type'){
       mf=!isArchived&&item.type===filter;
+    } else if(filterMode==='prio'){
+      mf=!isArchived&&(item.priority||'normal')===filter;
     } else {
       mf=!isArchived&&(item.category||'general')===filter;
     }
     return mq&&mf;
   });
+  return sortByPriority(items);
 }
 
 function ageStr(iso){
@@ -540,6 +570,10 @@ function updateCounts(){
   Object.keys(CATS).forEach(k=>{
     const e=document.getElementById('cnt-cat-'+k);
     if(e)e.textContent=active.filter(x=>(x.category||'general')===k).length;
+  });
+  ['high','normal','low'].forEach(p=>{
+    const e=document.getElementById('cnt-prio-'+p);
+    if(e)e.textContent=active.filter(x=>(x.priority||'normal')===p).length;
   });
 }
 
