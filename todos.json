@@ -1,16 +1,5 @@
 [
   {
-    "id": "tg-003",
-    "text": "Donate to John Brock's cancer GoFundMe",
-    "type": "task",
-    "notes": "Personal charitable giving — check GoFundMe link",
-    "priority": "normal",
-    "category": "personal",
-    "source": "telegram",
-    "done": false,
-    "createdAt": "2026-05-28T02:01:29Z"
-  },
-  {
     "id": "tg-001",
     "text": "Pay hospital birth bill",
     "type": "task",
@@ -19,7 +8,20 @@
     "category": "finance",
     "source": "telegram",
     "done": false,
+    "archived": false,
     "createdAt": "2026-05-28T01:51:32Z"
+  },
+  {
+    "id": "tg-010",
+    "text": "Request LARQ water filters — sooner than usual",
+    "type": "task",
+    "notes": "Request filters quicker if possible",
+    "priority": "high",
+    "category": "shopping",
+    "source": "telegram",
+    "done": false,
+    "archived": false,
+    "createdAt": "2026-05-29T19:17:00Z"
   },
   {
     "id": "tg-002",
@@ -30,7 +32,20 @@
     "category": "finance",
     "source": "telegram",
     "done": false,
+    "archived": false,
     "createdAt": "2026-05-28T01:51:32Z"
+  },
+  {
+    "id": "tg-003",
+    "text": "Donate to John Brock's cancer GoFundMe",
+    "type": "task",
+    "notes": "Personal charitable giving — check GoFundMe link",
+    "priority": "normal",
+    "category": "personal",
+    "source": "telegram",
+    "done": false,
+    "archived": false,
+    "createdAt": "2026-05-28T02:01:29Z"
   },
   {
     "id": "tg-004",
@@ -41,6 +56,7 @@
     "category": "shopping",
     "source": "telegram",
     "done": false,
+    "archived": false,
     "createdAt": "2026-05-29T19:11:00Z"
   },
   {
@@ -52,17 +68,7 @@
     "category": "tech",
     "source": "telegram",
     "done": false,
-    "createdAt": "2026-05-29T19:11:00Z"
-  },
-  {
-    "id": "tg-006",
-    "text": "Build out the to-do list web app and connect to GitHub Pages + GitHub repo",
-    "type": "task",
-    "notes": "Deployed as JB's OS — https://falatua.github.io/jbs-os/",
-    "priority": "normal",
-    "category": "tech",
-    "source": "telegram",
-    "done": true,
+    "archived": false,
     "createdAt": "2026-05-29T19:11:00Z"
   },
   {
@@ -74,6 +80,7 @@
     "category": "work",
     "source": "telegram",
     "done": false,
+    "archived": false,
     "createdAt": "2026-05-29T19:11:00Z"
   },
   {
@@ -85,6 +92,7 @@
     "category": "errands",
     "source": "telegram",
     "done": false,
+    "archived": false,
     "createdAt": "2026-05-29T19:11:00Z"
   },
   {
@@ -96,18 +104,8 @@
     "category": "errands",
     "source": "telegram",
     "done": false,
+    "archived": false,
     "createdAt": "2026-05-29T19:11:00Z"
-  },
-  {
-    "id": "tg-010",
-    "text": "Request LARQ water filters — sooner than usual",
-    "type": "task",
-    "notes": "JB wants to request filters quicker if possible",
-    "priority": "high",
-    "category": "shopping",
-    "source": "telegram",
-    "done": false,
-    "createdAt": "2026-05-29T19:17:00Z"
   },
   {
     "id": "tg-011",
@@ -118,6 +116,20 @@
     "category": "tech",
     "source": "telegram",
     "done": false,
+    "archived": false,
     "createdAt": "2026-05-29T19:17:00Z"
+  },
+  {
+    "id": "tg-006",
+    "text": "Build out the to-do list web app and connect to GitHub Pages",
+    "type": "task",
+    "notes": "Done — live at https://falatua.github.io/claude-notes/",
+    "priority": "normal",
+    "category": "tech",
+    "source": "telegram",
+    "done": true,
+    "archived": true,
+    "archivedAt": "2026-05-29T07:45:00Z",
+    "createdAt": "2026-05-29T19:11:00Z"
   }
 ]

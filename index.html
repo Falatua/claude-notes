@@ -344,6 +344,9 @@ const CATS = {
   family:   {label:'Family',       color:'#4ade80', dim:'rgba(74,222,128,.12)'},
   kids:     {label:'Kids',         color:'#f472b6', dim:'rgba(244,114,182,.12)'},
   finance:  {label:'Finance',      color:'#fbbf24', dim:'rgba(251,191,36,.12)'},
+  tech:     {label:'Tech',         color:'#38bdf8', dim:'rgba(56,189,248,.12)'},
+  shopping: {label:'Shopping',     color:'#fb923c', dim:'rgba(251,146,60,.12)'},
+  errands:  {label:'Errands',      color:'#f472b6', dim:'rgba(244,114,182,.12)'},
   lifestyle:{label:'Lifestyle',    color:'#fb923c', dim:'rgba(251,146,60,.12)'},
   health:   {label:'Health',       color:'#2dd4bf', dim:'rgba(45,212,191,.12)'},
   musubi:   {label:'Musubi Strong',color:'#f87171', dim:'rgba(248,113,113,.12)'},
@@ -639,6 +642,39 @@ function toast(msg){
     }
   }catch{}
   history.replaceState({},'',location.pathname);
+})();
+
+/* Server sync: fetch todos.json and merge into localStorage (new IDs only) */
+(function fetchServerTodos(){
+  fetch('todos.json?v='+Date.now())
+    .then(r=>r.ok?r.json():Promise.reject())
+    .then(serverItems=>{
+      if(!Array.isArray(serverItems)||!serverItems.length)return;
+      const local=load();
+      const localIds=new Set(local.map(x=>x.id));
+      // Remap legacy category names
+      const catRemap={errands:'errands',shopping:'shopping',tech:'tech'};
+      const fresh=serverItems
+        .filter(x=>!localIds.has(x.id))
+        .map(x=>({
+          ...x,
+          category: catRemap[x.category]||x.category||'general',
+          source: x.source||'telegram',
+          type: x.type||'task',
+        }));
+      // Also update done state for existing items if server marks them done
+      let changed=fresh.length>0;
+      const merged=[...fresh,...local.map(loc=>{
+        const srv=serverItems.find(s=>s.id===loc.id);
+        if(srv&&srv.done&&!loc.archived){
+          changed=true;
+          return{...loc,done:true,archived:true,archivedAt:loc.archivedAt||new Date().toISOString()};
+        }
+        return loc;
+      })];
+      if(changed){save(merged);render();updateCounts();}
+    })
+    .catch(()=>{/* offline or local dev — use localStorage only */});
 })();
 
 /* Init */
