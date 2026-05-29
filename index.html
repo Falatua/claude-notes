@@ -774,6 +774,42 @@
   </div>
 </div>
 
+<!-- ===== Routine item editor (daily / monthly) ===== -->
+<div class="backdrop hidden" id="routine-modal" onclick="closeRoutineOutside(event)" role="dialog" aria-modal="true" aria-label="Edit checklist item">
+  <div class="modal">
+    <div class="modal-title" id="rt-modal-title">Edit item</div>
+    <div class="field">
+      <label for="rt-text">Title</label>
+      <input id="rt-text" placeholder="What's the habit?" autocomplete="off">
+    </div>
+    <div class="field">
+      <label for="rt-notes">Notes <span style="color:var(--text-3);font-weight:400">(optional)</span></label>
+      <textarea id="rt-notes" placeholder="Any detail, target, or reminder..."></textarea>
+    </div>
+    <div class="field-row">
+      <div class="field">
+        <label for="rt-cat">Life Area</label>
+        <select id="rt-cat"></select>
+      </div>
+      <div class="field">
+        <label for="rt-priority">Priority</label>
+        <select id="rt-priority">
+          <option value="high">High</option>
+          <option value="normal">Normal</option>
+          <option value="low">Low</option>
+        </select>
+      </div>
+    </div>
+    <div style="font-size:11.5px;color:var(--text-3);line-height:1.5;margin-top:2px">Changes apply to this item on <strong id="rt-scope-word">every day</strong> going forward.</div>
+    <div class="modal-actions">
+      <button class="btn btn-ghost" style="color:var(--red)" onclick="deleteRoutineFromModal()">Delete</button>
+      <div style="flex:1"></div>
+      <button class="btn btn-ghost" onclick="closeRoutine()">Cancel</button>
+      <button class="btn btn-primary" onclick="saveRoutineEdit()">Save changes</button>
+    </div>
+  </div>
+</div>
+
 <div class="toast" id="toast" role="status" aria-live="polite"></div>
 
 <script>
@@ -1180,7 +1216,7 @@ function closeDetail(){document.getElementById('detail').classList.add('hidden')
 function closeDetailOutside(e){if(e.target.id==='detail')closeDetail();}
 
 document.addEventListener('keydown',e=>{
-  if(e.key==='Escape'){if(!document.getElementById('journal-modal').classList.contains('hidden')&&(!document.getElementById('j-question-menu').classList.contains('hidden')||!document.getElementById('j-template-menu').classList.contains('hidden'))){closeAllJMenus();return;}closeModal();closeDetail();closeJournal();closePrompts();}
+  if(e.key==='Escape'){if(!document.getElementById('journal-modal').classList.contains('hidden')&&(!document.getElementById('j-question-menu').classList.contains('hidden')||!document.getElementById('j-template-menu').classList.contains('hidden'))){closeAllJMenus();return;}closeModal();closeDetail();closeJournal();closePrompts();closeRoutine();}
   if((e.metaKey||e.ctrlKey)&&e.key==='n'){e.preventDefault();view==='journal'?newJournalEntry():openModal();}
   if((e.metaKey||e.ctrlKey)&&e.key==='f'&&view==='list'){e.preventDefault();document.getElementById('search').focus();}
   if((e.key==='Enter'||e.key===' ')&&e.target&&e.target.classList&&e.target.classList.contains('nav-item')){e.preventDefault();e.target.click();}
@@ -1341,8 +1377,9 @@ function toast(msg){
         if(!ex){
           store.templates.push(Object.assign({notes:'',priority:'normal',type:'task',category:'general',createdAt:new Date().toISOString()}, s));
           changed=true;
-        } else {
-          // Seed file is source of truth for these fields; streak log is keyed by id, so history is preserved
+        } else if(!ex.userEdited){
+          // Seed updates un-edited items (streak log is keyed by id, so history is preserved).
+          // Items the user has edited in-browser keep their edits and are never overwritten.
           ['text','emoji','category','priority','notes'].forEach(function(k){
             if(s[k]!==undefined && ex[k]!==s[k]){ex[k]=s[k];changed=true;}
           });
@@ -1398,6 +1435,43 @@ function delRoutine(scope,id){
   rSave(scope,store); render(); updateCounts(); toast('Removed');
 }
 
+/* Routine item editor — edits the TEMPLATE, so changes carry forward to every future period */
+let _rtEdit=null;
+function openRoutineEdit(scope,id){
+  const t=rStore(scope).templates.find(x=>x.id===id);if(!t)return;
+  _rtEdit={scope,id};_lastFocus=document.activeElement;
+  buildCatOptions('rt-cat');
+  document.getElementById('rt-modal-title').textContent=scope==='daily'?'Edit daily item':'Edit monthly item';
+  document.getElementById('rt-scope-word').textContent=scope==='daily'?'every day':'every month';
+  document.getElementById('rt-text').value=t.text||'';
+  document.getElementById('rt-notes').value=t.notes||'';
+  document.getElementById('rt-cat').value=t.category||'general';
+  document.getElementById('rt-priority').value=t.priority||'normal';
+  document.getElementById('routine-modal').classList.remove('hidden');
+  setTimeout(()=>document.getElementById('rt-text').focus(),50);
+}
+function saveRoutineEdit(){
+  if(!_rtEdit)return;
+  const {scope,id}=_rtEdit;const store=rStore(scope);const t=store.templates.find(x=>x.id===id);if(!t){closeRoutine();return;}
+  const text=document.getElementById('rt-text').value.trim();
+  if(!text){toast('Give it a title first');return;}
+  t.text=text;
+  t.notes=document.getElementById('rt-notes').value.trim();
+  t.category=document.getElementById('rt-cat').value;
+  t.priority=document.getElementById('rt-priority').value;
+  t.userEdited=true; // protects this item from being overwritten by the seed file on reload
+  // emoji is preserved as-is (seed/auto set); only the fields above are user-editable here
+  rSave(scope,store);render();updateCounts();closeRoutine();
+  toast('Saved — applies going forward');
+}
+function deleteRoutineFromModal(){
+  if(!_rtEdit)return;
+  if(!confirm('Remove this item from your '+_rtEdit.scope+' checklist?'))return;
+  delRoutine(_rtEdit.scope,_rtEdit.id);closeRoutine();
+}
+function closeRoutine(){document.getElementById('routine-modal').classList.add('hidden');_rtEdit=null;restoreFocus();}
+function closeRoutineOutside(e){if(e.target.id==='routine-modal')closeRoutine();}
+
 /* ===== View switching ===== */
 function syncWorkspaceNav(v){['list','daily','monthly','calendar','journal'].forEach(k=>{const e=document.getElementById('nav-view-'+k);if(e)e.classList.toggle('active',k===v);});}
 function applyViewChrome(v){
@@ -1448,7 +1522,7 @@ function routineItemHTML(scope,t,isDone){
       <div class="cb" onclick="toggleRoutine('${scope}','${t.id}')" role="checkbox" aria-checked="${isDone}" aria-label="Toggle: ${esc(t.text)}" tabindex="0" onkeydown="if(event.key===' '||event.key==='Enter'){toggleRoutine('${scope}','${t.id}');event.preventDefault()}">
         <svg class="cb-check" width="9" height="9" viewBox="0 0 10 10" fill="none" stroke="#111" stroke-width="2.2"><path d="M1.5 5l2.8 2.8 4.2-5"/></svg>
       </div>
-      <div class="item-body" style="cursor:default">
+      <div class="item-body" role="button" tabindex="0" onclick="openRoutineEdit('${scope}','${t.id}')" onkeydown="if(event.key==='Enter'){openRoutineEdit('${scope}','${t.id}');event.preventDefault()}" aria-label="Edit: ${esc(t.text)}" title="Click to edit — applies to all future ${scope==='daily'?'days':'months'}">
         <div class="item-text"><span class="item-emoji">${em}</span> ${esc(t.text)}</div>
         ${notes}
         <div class="item-meta">${catBadge}${streakChip}</div>
