@@ -1,5 +1,17 @@
 [
   {
+    "id": "tg-012",
+    "text": "Look into Obsidian for Claude Code and other AIs",
+    "type": "note",
+    "notes": "Research how Obsidian integrates with Claude Code and AI workflows",
+    "priority": "normal",
+    "category": "tech",
+    "source": "telegram",
+    "done": false,
+    "archived": false,
+    "createdAt": "2026-05-29T08:27:08Z"
+  },
+  {
     "id": "tg-001",
     "text": "Pay hospital birth bill",
     "type": "task",
