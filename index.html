@@ -273,11 +273,62 @@
     *,*::before,*::after{animation-duration:.001ms !important;animation-iteration-count:1 !important;transition-duration:.001ms !important}
   }
 
+  /* ===== Routines (Daily / Monthly) + Calendar ===== */
+  .routine-banner{display:flex;align-items:center;gap:16px;padding:16px 18px;border:1px solid var(--border);border-radius:var(--radius-lg);background:var(--surface);margin:6px 0 16px}
+  .routine-ring{position:relative;width:52px;height:52px;flex-shrink:0}
+  .routine-ring svg{transform:rotate(-90deg)}
+  .routine-ring .ring-pct{position:absolute;inset:0;display:flex;align-items:center;justify-content:center;font-family:var(--mono);font-size:13px;font-weight:600;color:var(--text);font-variant-numeric:tabular-nums}
+  .routine-banner-meta{flex:1;min-width:0}
+  .routine-banner-title{font-size:14px;font-weight:600;color:var(--text);letter-spacing:-.2px}
+  .routine-banner-sub{font-size:12.5px;color:var(--text-2);margin-top:2px}
+  .routine-reset{font-size:11px;color:var(--text-3);font-family:var(--mono);white-space:nowrap}
+
+  .streak-chip{display:inline-flex;align-items:center;gap:3px;font-size:11px;font-weight:600;font-family:var(--mono);color:var(--accent);background:var(--accent-dim);padding:1px 7px;border-radius:20px;font-variant-numeric:tabular-nums}
+  .streak-chip.cold{color:var(--text-3);background:var(--surface-hover)}
+  .streak-chip svg{opacity:.9}
+
+  .routine-empty-cat{font-size:11px;color:var(--text-3)}
+
+  /* Calendar */
+  .cal-wrap{padding:6px 0 24px}
+  .cal-head{display:flex;align-items:center;gap:12px;margin-bottom:14px}
+  .cal-title{font-size:17px;font-weight:700;letter-spacing:-.3px;min-width:190px}
+  .cal-nav{display:flex;gap:4px}
+  .cal-nav button{width:30px;height:30px;display:flex;align-items:center;justify-content:center;background:var(--surface);border:1px solid var(--border);border-radius:var(--radius);color:var(--text-2);cursor:pointer;transition:background var(--t),color var(--t),border-color var(--t)}
+  .cal-nav button:hover{background:var(--surface-hover);color:var(--text);border-color:var(--border-2)}
+  .cal-today-btn{margin-left:auto}
+  .cal-grid{display:grid;grid-template-columns:repeat(7,1fr);gap:6px}
+  .cal-dow{font-size:10.5px;font-weight:600;text-transform:uppercase;letter-spacing:.06em;color:var(--text-3);text-align:center;padding:2px 0 6px}
+  .cal-cell{min-height:96px;border:1px solid var(--border);border-radius:var(--radius);background:var(--surface);padding:6px 6px 4px;display:flex;flex-direction:column;gap:3px;overflow:hidden;transition:border-color var(--t),background var(--t)}
+  .cal-cell.muted{background:transparent;border-color:transparent}
+  .cal-cell.today{border-color:var(--accent)}
+  .cal-daynum{font-size:11.5px;font-family:var(--mono);color:var(--text-2);font-variant-numeric:tabular-nums;align-self:flex-end;line-height:1}
+  .cal-cell.today .cal-daynum{color:var(--accent);font-weight:700}
+  .cal-ev{font-size:10.5px;line-height:1.25;padding:2px 5px;border-radius:4px;cursor:pointer;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;border-left:2px solid var(--ev-color,var(--accent));background:var(--surface-hover);color:var(--text)}
+  .cal-ev:hover{background:var(--border)}
+  .cal-ev.monthly{border-left-color:var(--accent);color:var(--accent);background:var(--accent-dim)}
+  .cal-more{font-size:10px;color:var(--text-3);padding:0 5px}
+
+  .gcal-panel{display:flex;align-items:flex-start;gap:12px;margin-top:18px;padding:14px 16px;border:1px solid var(--border);border-radius:var(--radius-lg);background:var(--surface)}
+  .gcal-panel .gcal-ico{color:var(--accent);flex-shrink:0;margin-top:1px}
+  .gcal-panel-body{flex:1;min-width:0}
+  .gcal-panel-title{font-size:13px;font-weight:600;color:var(--text)}
+  .gcal-panel-desc{font-size:12px;color:var(--text-2);line-height:1.5;margin:4px 0 9px}
+  .gcal-url{font-family:var(--mono);font-size:11px;color:var(--text-2);background:var(--bg);border:1px solid var(--border);border-radius:6px;padding:6px 9px;word-break:break-all;margin-bottom:9px}
+  .gcal-actions{display:flex;gap:7px;flex-wrap:wrap}
+
+  /* Workspace nav active highlight reuse .active */
+  .due-chip{display:inline-flex;align-items:center;gap:3px;font-size:11px;color:var(--text-2);background:var(--surface-hover);padding:1px 7px;border-radius:5px;font-variant-numeric:tabular-nums}
+  .due-chip.overdue{color:var(--red);background:var(--red-dim)}
+  .due-chip.soon{color:var(--accent);background:var(--accent-dim)}
+
   @media(max-width:640px){
     .sidebar{display:none}
     .add-row .add-select:first-child{display:none}
     .detail-title{font-size:20px}
     .prop-label{width:104px;min-width:104px}
+    .cal-cell{min-height:60px}
+    .cal-title{min-width:0;font-size:15px}
   }
 </style>
 </head>
@@ -289,6 +340,28 @@
     <div class="sb-logo-mark">JB</div>
     <div class="sb-logo-text">JB's <span>OS</span></div>
   </div>
+
+  <div class="sb-section">
+    <div class="sb-label">Workspace</div>
+    <div class="nav-item active" id="nav-view-list" onclick="setView('list')" role="button" tabindex="0">
+      <svg class="nav-icon" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M5 4h9M5 8h9M5 12h9"/><circle cx="2.4" cy="4" r="1"/><circle cx="2.4" cy="8" r="1"/><circle cx="2.4" cy="12" r="1"/></svg>
+      Tasks &amp; Notes
+    </div>
+    <div class="nav-item" id="nav-view-daily" onclick="setView('daily')" role="button" tabindex="0">
+      <svg class="nav-icon" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><circle cx="8" cy="8" r="3"/><path d="M8 1v2M8 13v2M1 8h2M13 8h2M3 3l1.4 1.4M11.6 11.6L13 13M13 3l-1.4 1.4M4.4 11.6L3 13"/></svg>
+      Daily <span class="nav-count" id="cnt-daily">0</span>
+    </div>
+    <div class="nav-item" id="nav-view-monthly" onclick="setView('monthly')" role="button" tabindex="0">
+      <svg class="nav-icon" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M2 6h12M2 6v7a1 1 0 0 0 1 1h10a1 1 0 0 0 1-1V6M2 6V4a1 1 0 0 1 1-1h10a1 1 0 0 1 1 1v2M5 2v2M11 2v2"/><path d="M7 9.5l1.2 1.2L11 8"/></svg>
+      Monthly <span class="nav-count" id="cnt-monthly">0</span>
+    </div>
+    <div class="nav-item" id="nav-view-calendar" onclick="setView('calendar')" role="button" tabindex="0">
+      <svg class="nav-icon" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><rect x="2" y="3" width="12" height="11" rx="1.5"/><path d="M2 6.5h12M5 2v2M11 2v2"/><rect x="4.5" y="8.5" width="2" height="2" rx=".4" fill="currentColor" stroke="none"/></svg>
+      Calendar
+    </div>
+  </div>
+
+  <div class="sb-divider"></div>
 
   <div class="sb-section">
     <div class="sb-label">Views</div>
@@ -393,7 +466,7 @@
         </button>
       </div>
     </div>
-    <div class="search-wrap">
+    <div class="search-wrap" id="search-wrap">
       <div class="search-inner">
         <svg width="14" height="14" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.8"><circle cx="7" cy="7" r="5"/><path d="M11 11l3 3"/></svg>
         <input id="search" type="text" placeholder="Search items..." oninput="render()" autocomplete="off" spellcheck="false">
@@ -401,7 +474,7 @@
     </div>
   </div>
 
-  <div class="add-area">
+  <div class="add-area" id="add-area">
     <div class="add-row">
       <select class="add-select" id="quick-cat" aria-label="Category" style="max-width:110px"></select>
       <select class="add-select" id="quick-type" aria-label="Type" style="max-width:90px">
@@ -499,6 +572,10 @@
           <option value="low">Low</option>
         </select>
       </div>
+      <div class="prop-row">
+        <span class="prop-label"><svg width="14" height="14" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><rect x="2" y="3" width="12" height="11" rx="1.5"/><path d="M2 6.5h12M5 2v2M11 2v2"/></svg> Due date</span>
+        <input id="d-duedate" type="date" style="flex:1;background:var(--surface);border:1px solid var(--border);border-radius:var(--radius);padding:6px 10px;color:var(--text);font-size:13px;font-family:inherit;outline:none">
+      </div>
     </div>
 
     <div class="detail-section">
@@ -558,7 +635,7 @@ const SRC_LABEL  = {telegram:'via Telegram',browser:'added manually'};
 function load(){try{return JSON.parse(localStorage.getItem(KEY))||[];}catch{return [];}}
 function save(d){localStorage.setItem(KEY,JSON.stringify(d));}
 
-let filter='all', filterMode='view', _booting=true;
+let filter='all', filterMode='view', _booting=true, view='list';
 
 function uid(){return Date.now().toString(36)+Math.random().toString(36).slice(2,5);}
 
@@ -607,12 +684,13 @@ function restore(id){
 function del(id){save(load().filter(x=>x.id!==id));render();updateCounts();toast('Deleted');}
 
 function setFilter(f, mode){
-  filter=f; filterMode=mode;
+  filter=f; filterMode=mode; view='list';
   document.querySelectorAll('.nav-item').forEach(e=>{e.classList.remove('active');e.classList.remove('cat-active');});
   const el=document.getElementById('nav-'+(mode==='cat'?'cat-':'')+f);
   if(el){
     if(mode==='cat'){el.classList.add('cat-active');}else{el.classList.add('active');}
   }
+  syncWorkspaceNav('list');
   const cat=CATS[f];
   const dot=document.getElementById('page-title-dot');
   if(mode==='cat'&&cat){
@@ -683,6 +761,11 @@ function itemHTML(item, isArchiveView, idx){
   if(item.links&&item.links.length)indParts.push(`<span class="item-ind" title="${item.links.length} link(s)"><svg width="11" height="11" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.6"><path d="M6.5 9.5l3-3M7 4.5l1-1a2.5 2.5 0 0 1 3.5 3.5l-1 1M9 11.5l-1 1A2.5 2.5 0 0 1 4.5 9l1-1"/></svg>${item.links.length}</span>`);
   if(item.attachments&&item.attachments.length)indParts.push(`<span class="item-ind" title="${item.attachments.length} attachment(s)"><svg width="11" height="11" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.6"><path d="M11 6.5l-4 4a1.5 1.5 0 0 0 2 2l4-4a3 3 0 0 0-4-4l-4 4a4.5 4.5 0 0 0 6 6l3-3"/></svg>${item.attachments.length}</span>`);
   const indicators=indParts.length?`<span class="item-indicators">${indParts.join('')}</span>`:'';
+  let dueChip='';
+  if(item.dueDate){
+    const cls=dueClass(item.dueDate);
+    dueChip=`<span class="due-chip ${cls}"><svg width="10" height="10" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.6"><rect x="2" y="3" width="12" height="11" rx="1.5"/><path d="M2 6.5h12M5 2v2M11 2v2"/></svg>${fmtDue(item.dueDate)}</span>`;
+  }
   const actions=isArchiveView
     ?`<button class="del-btn restore-btn" onclick="restore('${item.id}')" title="Restore to active" aria-label="Restore item" style="color:var(--green)">
         <svg width="12" height="12" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="2"><path d="M3 8l3.5-3.5M3 8l3.5 3.5M3 8h9a2 2 0 0 1 0 4H9"/></svg>
@@ -708,7 +791,7 @@ function itemHTML(item, isArchiveView, idx){
       <div class="item-body" onclick="openDetail('${item.id}')" title="Click to open & edit details">
         <div class="item-text" style="${isArchiveView?'text-decoration:line-through;color:var(--text-3)':''}">${esc(item.text)}</div>
         ${notes}
-        <div class="item-meta">${catBadge}${typeBadge}${prio}${indicators}${isArchiveView?archivedDate:`<span class="item-date">${ageStr(item.createdAt)}</span>`}${src}</div>
+        <div class="item-meta">${catBadge}${typeBadge}${prio}${dueChip}${indicators}${isArchiveView?archivedDate:`<span class="item-date">${ageStr(item.createdAt)}</span>`}${src}</div>
       </div>
       <div class="item-actions">${actions}</div>
     </div>
@@ -716,6 +799,7 @@ function itemHTML(item, isArchiveView, idx){
 }
 
 function render(){
+  if(view!=='list'){renderView();return;}
   const all=getFiltered();
   const el=document.getElementById('list');
   const isArchiveView=filter==='archive';
@@ -771,6 +855,12 @@ function updateCounts(){
     const e=document.getElementById('cnt-prio-'+p);
     if(e)e.textContent=active.filter(x=>(x.priority||'normal')===p).length;
   });
+  try{
+    const dd=loadDaily(), dn=(dd.log[dateKey(new Date())]||[]).length;
+    const de=document.getElementById('cnt-daily'); if(de)de.textContent=Math.max(0,dd.templates.length-dn);
+    const mm=loadMonthly(), mn=(mm.log[monthKey(new Date())]||[]).length;
+    const me=document.getElementById('cnt-monthly'); if(me)me.textContent=Math.max(0,mm.templates.length-mn);
+  }catch{}
 }
 
 function quickAdd(e){
@@ -811,6 +901,7 @@ function openDetail(id){
   document.getElementById('d-cat').value=it.category||'general';
   document.getElementById('d-type').value=it.type||'task';
   document.getElementById('d-priority').value=it.priority||'normal';
+  document.getElementById('d-duedate').value=it.dueDate||'';
   renderDetailLinks(it.links||[]);
   renderDetailAttach();
   renderDetailBadges();
@@ -891,6 +982,7 @@ function saveDetail(){
   it.category=document.getElementById('d-cat').value;
   it.type=document.getElementById('d-type').value;
   it.priority=document.getElementById('d-priority').value;
+  it.dueDate=document.getElementById('d-duedate').value||'';
   const status=document.getElementById('d-status').value;
   if(status==='done'){if(!it.archived){it.archived=true;it.done=true;it.archivedAt=new Date().toISOString();}}
   else{it.archived=false;it.done=false;delete it.archivedAt;}
@@ -1023,6 +1115,209 @@ function toast(msg){
     })
     .catch(()=>{_booting=false;render();updateCounts();});
 })();
+
+/* ===== Date helpers ===== */
+function pad(n){return String(n).padStart(2,'0');}
+function dateKey(d){return d.getFullYear()+'-'+pad(d.getMonth()+1)+'-'+pad(d.getDate());}
+function monthKey(d){return d.getFullYear()+'-'+pad(d.getMonth()+1);}
+function fmtDue(s){const p=s.split('-').map(Number);return new Date(p[0],p[1]-1,p[2]).toLocaleDateString('en-US',{month:'short',day:'numeric'});}
+function dueClass(s){const today=dateKey(new Date());if(s<today)return 'overdue';const diff=(new Date(s+'T00:00:00')-new Date(today+'T00:00:00'))/86400000;return diff<=2?'soon':'';}
+
+/* ===== Routine (Daily / Monthly) data ===== */
+const DKEY='jbos_daily_v1', MKEY='jbos_monthly_v1';
+function loadDaily(){try{const o=JSON.parse(localStorage.getItem(DKEY));return o&&Array.isArray(o.templates)?o:{templates:[],log:{}};}catch{return{templates:[],log:{}};}}
+function saveDaily(o){localStorage.setItem(DKEY,JSON.stringify(o));}
+function loadMonthly(){try{const o=JSON.parse(localStorage.getItem(MKEY));return o&&Array.isArray(o.templates)?o:{templates:[],log:{}};}catch{return{templates:[],log:{}};}}
+function saveMonthly(o){localStorage.setItem(MKEY,JSON.stringify(o));}
+function rStore(scope){return scope==='daily'?loadDaily():loadMonthly();}
+function rSave(scope,o){scope==='daily'?saveDaily(o):saveMonthly(o);}
+function rPeriodKey(scope){return scope==='daily'?dateKey(new Date()):monthKey(new Date());}
+
+function routineStreak(scope,id){
+  const log=rStore(scope).log, daily=scope==='daily', key=daily?dateKey:monthKey;
+  let s=0, cur=new Date();
+  if(!(log[key(cur)]||[]).includes(id)){daily?cur.setDate(cur.getDate()-1):cur.setMonth(cur.getMonth()-1);}
+  while((log[key(cur)]||[]).includes(id)){s++;daily?cur.setDate(cur.getDate()-1):cur.setMonth(cur.getMonth()-1);}
+  return s;
+}
+function toggleRoutine(scope,id){
+  const store=rStore(scope), pkey=rPeriodKey(scope), arr=store.log[pkey]||[];
+  const i=arr.indexOf(id);
+  if(i>=0)arr.splice(i,1); else arr.push(id);
+  store.log[pkey]=arr; rSave(scope,store); render(); updateCounts();
+  if(i<0){const s=routineStreak(scope,id);toast(s>1?`Done — ${s} ${scope==='daily'?'day':'month'} streak 🔥`:'Done');}
+}
+function addRoutineItem(scope){
+  const inp=document.getElementById('quick-input'), text=inp.value.trim(); if(!text)return;
+  const cat=document.getElementById('quick-cat').value, store=rStore(scope);
+  store.templates.push({id:uid(),text,notes:'',category:cat,priority:'normal',type:'task',createdAt:new Date().toISOString()});
+  rSave(scope,store); inp.value=''; render(); updateCounts(); toast('Added to '+scope+' checklist');
+}
+function delRoutine(scope,id){
+  const store=rStore(scope); store.templates=store.templates.filter(t=>t.id!==id);
+  rSave(scope,store); render(); updateCounts(); toast('Removed');
+}
+
+/* ===== View switching ===== */
+function syncWorkspaceNav(v){['list','daily','monthly','calendar'].forEach(k=>{const e=document.getElementById('nav-view-'+k);if(e)e.classList.toggle('active',k===v);});}
+function applyViewChrome(v){
+  const sw=document.getElementById('search-wrap'), aa=document.getElementById('add-area'), qt=document.getElementById('quick-type'), qi=document.getElementById('quick-input');
+  if(v==='list'){sw.style.display='';aa.style.display='';qt.style.display='';qi.placeholder='Quick add — press Enter to save';}
+  else if(v==='daily'){sw.style.display='none';aa.style.display='';qt.style.display='none';qi.placeholder='Add a daily habit (e.g. Stretch 10 min) — Enter to save';}
+  else if(v==='monthly'){sw.style.display='none';aa.style.display='';qt.style.display='none';qi.placeholder='Add a monthly item — Enter to save';}
+  else if(v==='calendar'){sw.style.display='none';aa.style.display='none';}
+}
+function setView(v){
+  if(v==='list'){view='list';applyViewChrome('list');setFilter(filter,filterMode);updateCounts();return;}
+  view=v; syncWorkspaceNav(v); applyViewChrome(v);
+  ['nav-all','nav-active','nav-archive','nav-task','nav-idea','nav-note','nav-project'].forEach(id=>{const e=document.getElementById(id);if(e)e.classList.remove('active');});
+  document.querySelectorAll('[id^="nav-prio-"]').forEach(e=>e.classList.remove('active'));
+  document.querySelectorAll('[id^="nav-cat-"]').forEach(e=>e.classList.remove('active','cat-active'));
+  render(); updateCounts();
+}
+function setTitle(text,count){
+  const pt=document.getElementById('page-title');
+  document.getElementById('page-title-dot').style.display='none';
+  pt.lastChild.textContent=text;
+  const pc=document.getElementById('pt-count');
+  if(pc){if(count==null){pc.style.display='none';}else{pc.style.display='';pc.textContent=count;}}
+}
+function renderView(){
+  applyViewChrome(view);
+  if(view==='daily')renderRoutine('daily');
+  else if(view==='monthly')renderRoutine('monthly');
+  else if(view==='calendar')renderCalendar();
+}
+
+/* ===== Routine rendering ===== */
+function routineItemHTML(scope,t,isDone){
+  const cat=CATS[t.category||'general']||CATS.general;
+  const catBadge=`<span class="badge-cat" style="background:${cat.dim};color:${cat.color}">${cat.label}</span>`;
+  const s=routineStreak(scope,t.id);
+  const unit=scope==='daily'?'d':'mo';
+  const streakChip=`<span class="streak-chip ${s>0?'':'cold'}" title="${s} ${scope==='daily'?'day':'month'} streak"><svg width="10" height="10" viewBox="0 0 16 16" fill="currentColor"><path d="M8 1.3s.4 2.1 1.9 3.6C11.6 6.6 12.5 8 12.5 9.7a4.5 4.5 0 0 1-9 0c0-1 .4-1.9 1-2.6.2 1 .9 1.5 1.6 1.5C4.6 6 8 6 8 1.3z"/></svg>${s}${unit}</span>`;
+  const notes=t.notes?`<div class="item-sub">${esc(t.notes)}</div>`:'';
+  return `<div class="item ${isDone?'done':''}" id="rt-${scope}-${t.id}" role="listitem" style="--item-cat-color:${cat.color};">
+    <div class="item-bar"></div>
+    <div class="item-inner">
+      <div class="cb" onclick="toggleRoutine('${scope}','${t.id}')" role="checkbox" aria-checked="${isDone}" tabindex="0" onkeydown="if(event.key===' '||event.key==='Enter'){toggleRoutine('${scope}','${t.id}');event.preventDefault()}">
+        <svg class="cb-check" width="9" height="9" viewBox="0 0 10 10" fill="none" stroke="#111" stroke-width="2.2"><path d="M1.5 5l2.8 2.8 4.2-5"/></svg>
+      </div>
+      <div class="item-body" style="cursor:default">
+        <div class="item-text">${esc(t.text)}</div>
+        ${notes}
+        <div class="item-meta">${catBadge}${streakChip}</div>
+      </div>
+      <div class="item-actions">
+        <button class="del-btn" onclick="delRoutine('${scope}','${t.id}')" title="Remove" aria-label="Remove">
+          <svg width="12" height="12" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="2"><path d="M3 8h10"/></svg>
+        </button>
+      </div>
+    </div>
+  </div>`;
+}
+function renderRoutine(scope){
+  const daily=scope==='daily', store=rStore(scope), pkey=rPeriodKey(scope), done=new Set(store.log[pkey]||[]);
+  setTitle(daily?'Daily Checklist':'Monthly Checklist', Math.max(0,store.templates.length-done.size));
+  const el=document.getElementById('list');
+  if(!store.templates.length){
+    el.innerHTML=`<div class="empty-state"><div class="empty-icon">${daily?'☀':'◴'}</div><div class="empty-title">${daily?'No daily habits yet':'No monthly items yet'}</div><div class="empty-hint">Add ${daily?'a daily habit':'a monthly item'} above. It resets ${daily?'every day at midnight':'on the 1st of each month'} and tracks your streak.</div></div>`;
+    return;
+  }
+  const tpl=store.templates.slice().sort((a,b)=>{
+    const da=done.has(a.id),db=done.has(b.id); if(da!==db)return da?1:-1;
+    const pa=PRIO_ORDER[a.priority]??1,pb=PRIO_ORDER[b.priority]??1; if(pa!==pb)return pa-pb;
+    return (a.createdAt||'').localeCompare(b.createdAt||'');
+  });
+  const total=store.templates.length, n=done.size, pct=Math.round(n/total*100);
+  const R=22, C=2*Math.PI*R, off=C*(1-n/total);
+  let html=`<div class="routine-banner">
+    <div class="routine-ring">
+      <svg width="52" height="52"><circle cx="26" cy="26" r="${R}" fill="none" stroke="var(--border-2)" stroke-width="5"/><circle cx="26" cy="26" r="${R}" fill="none" stroke="var(--accent)" stroke-width="5" stroke-linecap="round" stroke-dasharray="${C.toFixed(1)}" stroke-dashoffset="${off.toFixed(1)}"/></svg>
+      <div class="ring-pct">${pct}%</div>
+    </div>
+    <div class="routine-banner-meta">
+      <div class="routine-banner-title">${n} of ${total} done ${daily?'today':'this month'}</div>
+      <div class="routine-banner-sub">${n===total?'All done — nice work.':'Check items off as you complete them.'}</div>
+    </div>
+    <div class="routine-reset">${daily?'Resets daily · midnight':'Resets monthly · the 1st'}</div>
+  </div><div class="task-list">${tpl.map(t=>routineItemHTML(scope,t,done.has(t.id))).join('')}</div>`;
+  el.innerHTML=html;
+}
+
+/* ===== Calendar ===== */
+let calRef=null;
+function calInit(){if(!calRef){const n=new Date();calRef=new Date(n.getFullYear(),n.getMonth(),1);}}
+function calShift(n){calInit();calRef=new Date(calRef.getFullYear(),calRef.getMonth()+n,1);render();}
+function calToday(){const n=new Date();calRef=new Date(n.getFullYear(),n.getMonth(),1);render();}
+function renderCalendar(){
+  calInit();
+  const y=calRef.getFullYear(), m=calRef.getMonth();
+  setTitle('Calendar', null);
+  const startDow=new Date(y,m,1).getDay(), days=new Date(y,m+1,0).getDate(), todayK=dateKey(new Date());
+  const evByDay={};
+  load().filter(i=>i.dueDate&&!i.archived).forEach(i=>{const p=i.dueDate.split('-').map(Number);if(p[0]===y&&p[1]===m+1)(evByDay[p[2]]=evByDay[p[2]]||[]).push(i);});
+  const monthly=loadMonthly().templates;
+  const dows=['Sun','Mon','Tue','Wed','Thu','Fri','Sat'];
+  let head=dows.map(d=>`<div class="cal-dow">${d}</div>`).join('');
+  let cells='';
+  for(let i=0;i<startDow;i++)cells+=`<div class="cal-cell muted"></div>`;
+  for(let d=1;d<=days;d++){
+    const isToday=`${y}-${pad(m+1)}-${pad(d)}`===todayK;
+    let evs='';
+    if(d===1&&monthly.length){
+      evs+=monthly.slice(0,2).map(t=>`<div class="cal-ev monthly" onclick="setView('monthly')" title="Monthly: ${esc(t.text)}">${esc(t.text)}</div>`).join('');
+      if(monthly.length>2)evs+=`<div class="cal-more">+${monthly.length-2} monthly</div>`;
+    }
+    const de=evByDay[d]||[];
+    evs+=de.slice(0,3).map(i=>{const c=CATS[i.category||'general']||CATS.general;return `<div class="cal-ev" style="--ev-color:${c.color}" onclick="openDetail('${i.id}')" title="${esc(i.text)}">${esc(i.text)}</div>`;}).join('');
+    if(de.length>3)evs+=`<div class="cal-more">+${de.length-3} more</div>`;
+    cells+=`<div class="cal-cell ${isToday?'today':''}"><div class="cal-daynum">${d}</div>${evs}</div>`;
+  }
+  const feed='https://falatua.github.io/claude-notes/calendar.ics';
+  document.getElementById('list').innerHTML=`<div class="cal-wrap">
+    <div class="cal-head">
+      <div class="cal-title">${calRef.toLocaleDateString('en-US',{month:'long',year:'numeric'})}</div>
+      <div class="cal-nav">
+        <button onclick="calShift(-1)" aria-label="Previous month"><svg width="14" height="14" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="2"><path d="M10 3L5 8l5 5"/></svg></button>
+        <button onclick="calShift(1)" aria-label="Next month"><svg width="14" height="14" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="2"><path d="M6 3l5 5-5 5"/></svg></button>
+      </div>
+      <button class="btn btn-ghost cal-today-btn" onclick="calToday()">Today</button>
+    </div>
+    <div class="cal-grid">${head}${cells}</div>
+    <div class="gcal-panel">
+      <svg class="gcal-ico" width="18" height="18" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.6"><rect x="2" y="3" width="12" height="11" rx="1.5"/><path d="M2 6.5h12M5 2v2M11 2v2"/></svg>
+      <div class="gcal-panel-body">
+        <div class="gcal-panel-title">Sync to Google Calendar</div>
+        <div class="gcal-panel-desc">In Google Calendar: Other calendars → From URL → paste the feed below. It auto-refreshes (one-way) with dated items and monthly recurring items. Or export a snapshot to import now.</div>
+        <div class="gcal-url">${feed}</div>
+        <div class="gcal-actions">
+          <button class="btn btn-ghost" onclick="copyFeed()">Copy feed URL</button>
+          <button class="btn btn-primary" onclick="exportICS()">Export .ics</button>
+        </div>
+      </div>
+    </div>
+  </div>`;
+}
+
+/* ===== .ics generation ===== */
+function icsEsc(s){return String(s).replace(/([\\,;])/g,'\\$1').replace(/\n/g,'\\n');}
+function buildICS(){
+  const dt=new Date();
+  const stamp=dt.getUTCFullYear()+pad(dt.getUTCMonth()+1)+pad(dt.getUTCDate())+'T'+pad(dt.getUTCHours())+pad(dt.getUTCMinutes())+pad(dt.getUTCSeconds())+'Z';
+  const L=['BEGIN:VCALENDAR','VERSION:2.0','PRODID:-//JB OS//Calendar//EN','CALSCALE:GREGORIAN','X-WR-CALNAME:JB OS'];
+  load().filter(i=>i.dueDate&&!i.archived).forEach(i=>{
+    L.push('BEGIN:VEVENT','UID:'+i.id+'@jbos','DTSTAMP:'+stamp,'DTSTART;VALUE=DATE:'+i.dueDate.replace(/-/g,''),'SUMMARY:'+icsEsc(i.text));
+    if(i.description)L.push('DESCRIPTION:'+icsEsc(i.description));
+    L.push('END:VEVENT');
+  });
+  const n=new Date(), firstThis=n.getFullYear()+pad(n.getMonth()+1)+'01';
+  loadMonthly().templates.forEach(t=>L.push('BEGIN:VEVENT','UID:m'+t.id+'@jbos','DTSTAMP:'+stamp,'DTSTART;VALUE=DATE:'+firstThis,'RRULE:FREQ=MONTHLY;BYMONTHDAY=1','SUMMARY:'+icsEsc('[Monthly] '+t.text),'END:VEVENT'));
+  L.push('END:VCALENDAR');
+  return L.join('\r\n');
+}
+function exportICS(){const blob=new Blob([buildICS()],{type:'text/calendar'});const a=document.createElement('a');a.href=URL.createObjectURL(blob);a.download='jbos-calendar.ics';a.click();toast('Exported .ics');}
+function copyFeed(){try{navigator.clipboard.writeText('https://falatua.github.io/claude-notes/calendar.ics');toast('Feed URL copied');}catch{toast('Copy failed — select the URL manually');}}
 
 /* Init */
 buildCatOptions('quick-cat');
