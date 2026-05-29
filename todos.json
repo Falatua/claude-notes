@@ -1,5 +1,31 @@
 [
   {
+    "id": "tg-013",
+    "text": "Turn JB OS into a mobile app (installable via browser / Add to Home Screen)",
+    "type": "idea",
+    "emoji": "📱",
+    "notes": "Make JB OS installable from the browser so it behaves like a native mobile app (PWA / Add to Home Screen).",
+    "priority": "normal",
+    "category": "tech",
+    "source": "telegram",
+    "done": false,
+    "archived": false,
+    "createdAt": "2026-05-29T20:43:57Z"
+  },
+  {
+    "id": "tg-014",
+    "text": "Find Ancer Lab platforms with mobile login (use Whisper Flow for reports without IT)",
+    "type": "task",
+    "emoji": "🎙️",
+    "notes": "See which Ancer Lab platforms allow mobile login, so reports and end-of-day updates can be written with Whisper Flow voice dictation without needing IT support.",
+    "priority": "normal",
+    "category": "work",
+    "source": "telegram",
+    "done": false,
+    "archived": false,
+    "createdAt": "2026-05-29T20:43:57Z"
+  },
+  {
     "id": "c-heber-designs",
     "text": "Work on the designs for Heber + get his feedback",
     "type": "task",
