@@ -1,0 +1,6 @@
+[
+  { "id": "d-water", "text": "Drink water (8 cups)", "emoji": "💧", "category": "health", "priority": "high" },
+  { "id": "d-exercise", "text": "Exercise (30 min)", "emoji": "🏋️", "category": "health", "priority": "high" },
+  { "id": "d-vitamins", "text": "Take vitamins", "emoji": "💊", "category": "health", "priority": "normal" },
+  { "id": "d-stretch", "text": "Stretching & mobility work", "emoji": "🧘", "category": "health", "priority": "normal", "notes": "Hips + shoulders, ~10 min" }
+]

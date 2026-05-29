@@ -220,6 +220,7 @@
   .item-body{cursor:pointer}
   .item-indicators{display:inline-flex;align-items:center;gap:7px;margin-left:1px}
   .item-ind{display:inline-flex;align-items:center;gap:3px;font-size:11px;color:var(--text-3)}
+  .item-text .item-emoji{font-size:14px;margin-right:4px}
 
   /* ===== Design system v2: materiality, motion, states ===== */
   /* Brand mark */
@@ -660,7 +661,7 @@ function addItem(text, type='task', notes='', source='browser', priority='normal
   const items=load();
   const now=new Date().toISOString();
   items.unshift({id:uid(),text:text.trim(),notes:notes.trim(),type,priority,source,category,done:false,
-    description:'',links:[],attachments:[],createdAt:now,updatedAt:now});
+    emoji:guessEmoji(text,category),description:'',links:[],attachments:[],createdAt:now,updatedAt:now});
   save(items);render();updateCounts();
   toast('Added: '+text.slice(0,48));
 }
@@ -791,7 +792,7 @@ function itemHTML(item, isArchiveView, idx){
     <div class="item-inner">
       ${checkEl}
       <div class="item-body" onclick="openDetail('${item.id}')" title="Click to open & edit details">
-        <div class="item-text" style="${isArchiveView?'text-decoration:line-through;color:var(--text-3)':''}">${esc(item.text||'Untitled')}</div>
+        <div class="item-text" style="${isArchiveView?'text-decoration:line-through;color:var(--text-3)':''}"><span class="item-emoji">${item.emoji||guessEmoji(item.text||'',item.category)}</span> ${esc(item.text||'Untitled')}</div>
         ${notes}
         <div class="item-meta">${catBadge}${typeBadge}${prio}${dueChip}${indicators}${isArchiveView?archivedDate:`<span class="item-date">${ageStr(item.createdAt)}</span>`}${src}</div>
       </div>
@@ -1041,6 +1042,42 @@ function importJSON(){
 
 function esc(s){return String(s).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;').replace(/'/g,'&#39;');}
 
+/* Pick a fitting emoji for any item (used across all views; stored on add, guessed at render as fallback) */
+function guessEmoji(text,category){
+  const s=(text||'').toLowerCase();
+  const map=[
+    [/water|hydrate|\bdrink\b|larq|filter/,'💧'],
+    [/exercise|workout|work out|\bgym\b|lift|run\b|running|cardio|\btrain\b/,'🏋️'],
+    [/stretch|mobility|yoga|foam roll/,'🧘'],
+    [/vitamin|supplement|\bpill|meds\b|medicine|medication/,'💊'],
+    [/doctor|dentist|appointment|checkup|clinic|hospital/,'🏥'],
+    [/invest|stocks|capital gains|portfolio/,'📈'],
+    [/rent|\bbill\b|invoice|\btax\b|budget|payment|mortgage|finance/,'💰'],
+    [/donate|donation|gofundme|charity/,'❤️'],
+    [/\bbuy\b|order|shop|grocery|groceries|purchase|\bcart\b|grip|accessor/,'🛒'],
+    [/\bcall\b|phone call|ring\b/,'📞'],
+    [/email|inbox|reply/,'✉️'],
+    [/\bcar\b|oil change|vehicle|\btire/,'🚗'],
+    [/batter(y|ies)|key fob|\bfob\b/,'🔋'],
+    [/clean|laundry|dishes|vacuum|tidy/,'🧹'],
+    [/\bread\b|\bbook\b|article/,'📖'],
+    [/\bvps\b|server|deploy|\bgit\b|github|\brepo\b|coding|\bcode\b|web app|website|\bapi\b|connections/,'💻'],
+    [/design|figma|\blogo\b|mockup/,'🎨'],
+    [/\brom|roms|download|old phone/,'📱'],
+    [/obsidian|note-taking|second brain/,'🗂️'],
+    [/music|song|playlist/,'🎵'],
+    [/cook|meal|recipe|dinner|lunch/,'🍽️'],
+    [/baby|diaper|\bpump|nursery/,'🍼'],
+    [/haircut|barber/,'💈'],
+    [/meeting|standup|\bsync\b/,'🗓️'],
+    [/write|draft|\bblog\b|\bpost\b/,'📝'],
+    [/idea|brainstorm|concept/,'💡']
+  ];
+  for(let i=0;i<map.length;i++){if(map[i][0].test(s))return map[i][1];}
+  const c={work:'💼',personal:'🌿',family:'👨‍👩‍👧',kids:'🧒',finance:'💰',tech:'💻',shopping:'🛒',errands:'✅',lifestyle:'✨',health:'🩺',musubi:'🌺',general:'📌'};
+  return c[category]||'📌';
+}
+
 let _toastTimer;
 function toast(msg){
   const el=document.getElementById('toast');
@@ -1119,6 +1156,21 @@ function toast(msg){
     .catch(()=>{_booting=false;render();updateCounts();});
 })();
 
+/* Routine seeds: merge daily.json / monthly.json templates into localStorage (new ids only) */
+(function fetchRoutineSeeds(){
+  [['daily','daily.json'],['monthly','monthly.json']].forEach(function(pair){
+    var scope=pair[0], file=pair[1];
+    fetch(file+'?v='+Date.now()).then(function(r){return r.ok?r.json():Promise.reject();}).then(function(seeds){
+      if(!Array.isArray(seeds)||!seeds.length)return;
+      var store=rStore(scope), ids=new Set(store.templates.map(function(t){return t.id;}));
+      var fresh=seeds.filter(function(s){return s&&s.id&&!ids.has(s.id);}).map(function(s){
+        return Object.assign({notes:'',priority:'normal',type:'task',category:'general',createdAt:new Date().toISOString()}, s);
+      });
+      if(fresh.length){store.templates=store.templates.concat(fresh);rSave(scope,store);if(view===scope)render();updateCounts();}
+    }).catch(function(){});
+  });
+})();
+
 /* ===== Date helpers ===== */
 function pad(n){return String(n).padStart(2,'0');}
 function dateKey(d){return d.getFullYear()+'-'+pad(d.getMonth()+1)+'-'+pad(d.getDate());}
@@ -1156,7 +1208,7 @@ function toggleRoutine(scope,id){
 function addRoutineItem(scope){
   const inp=document.getElementById('quick-input'), text=inp.value.trim(); if(!text)return;
   const cat=document.getElementById('quick-cat').value, store=rStore(scope);
-  store.templates.push({id:uid(),text,notes:'',category:cat,priority:'normal',type:'task',createdAt:new Date().toISOString()});
+  store.templates.push({id:uid(),text,notes:'',category:cat,priority:'normal',type:'task',emoji:guessEmoji(text,cat),createdAt:new Date().toISOString()});
   rSave(scope,store); inp.value=''; render(); updateCounts(); toast('Added to '+scope+' checklist');
 }
 function delRoutine(scope,id){
@@ -1199,9 +1251,10 @@ function renderView(){
 function routineItemHTML(scope,t,isDone){
   const cat=CATS[t.category||'general']||CATS.general;
   const catBadge=`<span class="badge-cat" style="background:${cat.dim};color:${cat.color}">${cat.label}</span>`;
-  const s=routineStreak(scope,t.id);
-  const unit=scope==='daily'?'d':'mo';
-  const streakChip=s>0?`<span class="streak-chip" title="${s} ${scope==='daily'?'day':'month'} streak"><svg width="10" height="10" viewBox="0 0 16 16" fill="currentColor"><path d="M8 1.3s.4 2.1 1.9 3.6C11.6 6.6 12.5 8 12.5 9.7a4.5 4.5 0 0 1-9 0c0-1 .4-1.9 1-2.6.2 1 .9 1.5 1.6 1.5C4.6 6 8 6 8 1.3z"/></svg>${s}${unit}</span>`:'';
+  // Streaks are a DAILY-only gamification feature (not monthly)
+  const s=scope==='daily'?routineStreak(scope,t.id):0;
+  const streakChip=(scope==='daily'&&s>0)?`<span class="streak-chip" title="${s} day streak"><svg width="10" height="10" viewBox="0 0 16 16" fill="currentColor"><path d="M8 1.3s.4 2.1 1.9 3.6C11.6 6.6 12.5 8 12.5 9.7a4.5 4.5 0 0 1-9 0c0-1 .4-1.9 1-2.6.2 1 .9 1.5 1.6 1.5C4.6 6 8 6 8 1.3z"/></svg>${s}d</span>`:'';
+  const em=t.emoji||guessEmoji(t.text,t.category);
   const notes=t.notes?`<div class="item-sub">${esc(t.notes)}</div>`:'';
   return `<div class="item ${isDone?'done':''}" id="rt-${scope}-${t.id}" role="listitem" style="--item-cat-color:${cat.color};">
     <div class="item-bar"></div>
@@ -1210,7 +1263,7 @@ function routineItemHTML(scope,t,isDone){
         <svg class="cb-check" width="9" height="9" viewBox="0 0 10 10" fill="none" stroke="#111" stroke-width="2.2"><path d="M1.5 5l2.8 2.8 4.2-5"/></svg>
       </div>
       <div class="item-body" style="cursor:default">
-        <div class="item-text">${esc(t.text)}</div>
+        <div class="item-text"><span class="item-emoji">${em}</span> ${esc(t.text)}</div>
         ${notes}
         <div class="item-meta">${catBadge}${streakChip}</div>
       </div>
@@ -1263,8 +1316,6 @@ function renderCalendar(){
   const startDow=new Date(y,m,1).getDay(), days=new Date(y,m+1,0).getDate(), todayK=dateKey(new Date());
   const evByDay={};
   load().filter(i=>i.dueDate&&!i.archived).forEach(i=>{const p=i.dueDate.split('-').map(Number);if(p[0]===y&&p[1]===m+1)(evByDay[p[2]]=evByDay[p[2]]||[]).push(i);});
-  const monthly=loadMonthly().templates;
-  const now=new Date(), showMonthly=(y>now.getFullYear())||(y===now.getFullYear()&&m>=now.getMonth());
   const hasDated=Object.keys(evByDay).length>0;
   const dows=['Sun','Mon','Tue','Wed','Thu','Fri','Sat'];
   let head=dows.map(d=>`<div class="cal-dow">${d}</div>`).join('');
@@ -1273,12 +1324,8 @@ function renderCalendar(){
   for(let d=1;d<=days;d++){
     const isToday=`${y}-${pad(m+1)}-${pad(d)}`===todayK;
     let evs='';
-    if(d===1&&monthly.length&&showMonthly){
-      evs+=monthly.slice(0,2).map(t=>`<div class="cal-ev monthly" role="button" tabindex="0" onclick="setView('monthly')" onkeydown="if(event.key==='Enter'||event.key===' '){setView('monthly');event.preventDefault()}" title="Monthly: ${esc(t.text)}">↻ ${esc(t.text)}</div>`).join('');
-      if(monthly.length>2)evs+=`<div class="cal-more">+${monthly.length-2} monthly</div>`;
-    }
     const de=evByDay[d]||[];
-    evs+=de.slice(0,3).map(i=>{const c=CATS[i.category||'general']||CATS.general;return `<div class="cal-ev" style="--ev-color:${c.color}" role="button" tabindex="0" onclick="openDetail('${i.id}')" onkeydown="if(event.key==='Enter'||event.key===' '){openDetail('${i.id}');event.preventDefault()}" title="${esc(i.text||'')}">${esc(i.text||'')}</div>`;}).join('');
+    evs+=de.slice(0,3).map(i=>{const c=CATS[i.category||'general']||CATS.general;const em=i.emoji||guessEmoji(i.text||'',i.category);return `<div class="cal-ev" style="--ev-color:${c.color}" role="button" tabindex="0" onclick="openDetail('${i.id}')" onkeydown="if(event.key==='Enter'||event.key===' '){openDetail('${i.id}');event.preventDefault()}" title="${esc(i.text||'')}">${em} ${esc(i.text||'')}</div>`;}).join('');
     if(de.length>3)evs+=`<div class="cal-more">+${de.length-3} more</div>`;
     cells+=`<div class="cal-cell ${isToday?'today':''}"><div class="cal-daynum">${d}</div>${evs}</div>`;
   }
@@ -1292,13 +1339,13 @@ function renderCalendar(){
       </div>
       <button class="btn btn-ghost cal-today-btn" onclick="calToday()">Today</button>
     </div>
-    ${(!hasDated&&!(showMonthly&&monthly.length))?`<div class="empty-hint" style="margin:0 0 12px">No dated items this month. Open any task and set a <strong>Due date</strong> to place it on the calendar (and your Google feed).</div>`:''}
+    ${!hasDated?`<div class="empty-hint" style="margin:0 0 12px">Nothing dated this month. Set a <strong>Due date</strong> on a task (Tasks &amp; Notes → open an item → Due date) to place it here and on your Google feed.</div>`:''}
     <div class="cal-grid">${head}${cells}</div>
     <div class="gcal-panel">
       <svg class="gcal-ico" width="18" height="18" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.6"><rect x="2" y="3" width="12" height="11" rx="1.5"/><path d="M2 6.5h12M5 2v2M11 2v2"/></svg>
       <div class="gcal-panel-body">
         <div class="gcal-panel-title">Sync to Google Calendar</div>
-        <div class="gcal-panel-desc">In Google Calendar: Other calendars → From URL → paste the feed below. It auto-refreshes (one-way) with dated items and monthly recurring items. Or export a snapshot to import now.</div>
+        <div class="gcal-panel-desc">In Google Calendar: Other calendars → From URL → paste the feed below. It auto-refreshes (one-way) with your dated tasks. Or export a snapshot to import now.</div>
         <div class="gcal-url">${feed}</div>
         <div class="gcal-actions">
           <button class="btn btn-ghost" onclick="copyFeed()">Copy feed URL</button>
@@ -1320,8 +1367,6 @@ function buildICS(){
     if(i.description)L.push('DESCRIPTION:'+icsEsc(i.description));
     L.push('END:VEVENT');
   });
-  const n=new Date(), firstThis=n.getFullYear()+pad(n.getMonth()+1)+'01';
-  loadMonthly().templates.forEach(t=>L.push('BEGIN:VEVENT','UID:m'+t.id+'@jbos','DTSTAMP:'+stamp,'DTSTART;VALUE=DATE:'+firstThis,'RRULE:FREQ=MONTHLY;BYMONTHDAY=1','SUMMARY:'+icsEsc('[Monthly] '+t.text),'END:VEVENT'));
   L.push('END:VCALENDAR');
   return L.map(icsFold).join('\r\n');
 }
