@@ -1,5 +1,21 @@
 [
   {
+    "id": "c-heber-designs",
+    "text": "Work on the designs for Heber + get his feedback",
+    "type": "task",
+    "notes": "Finish the designs and get Heber's feedback before the next haircut, so a price can be settled",
+    "description": "Action: complete the design work for Heber, share it with him for feedback, and use that to land on a price. Deadline: before my next haircut.",
+    "links": [],
+    "attachments": [],
+    "priority": "normal",
+    "category": "work",
+    "source": "chat",
+    "done": false,
+    "archived": false,
+    "createdAt": "2026-05-29T11:05:00Z",
+    "updatedAt": "2026-05-29T11:05:00Z"
+  },
+  {
     "id": "idea-daily-todo",
     "text": "Build a daily to-do / daily task system for JB OS",
     "type": "idea",
