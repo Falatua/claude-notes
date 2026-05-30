@@ -389,6 +389,14 @@
   .dbars{display:flex;align-items:flex-end;gap:4px;height:92px;margin-top:2px}
   .dbar{flex:1;min-width:0;background:var(--accent);border-radius:3px 3px 0 0;opacity:.9;min-height:2px}
   .dbar.empty{background:var(--border-2);opacity:.5;height:2px!important}
+  .di-label{font-size:10.5px;font-weight:600;text-transform:uppercase;letter-spacing:.05em;color:var(--text-3);margin:2px 0 8px}
+  .di-chips{display:flex;flex-wrap:wrap;gap:6px}
+  .di-chip{display:inline-flex;align-items:center;gap:5px;font-size:12px;color:var(--text);background:var(--surface-hover);border:1px solid var(--border);padding:3px 9px;border-radius:20px}
+  .di-chip-n{font-size:10px;color:var(--text-3);font-family:var(--mono);font-variant-numeric:tabular-nums}
+  .di-quote{border-left:2px solid var(--accent);padding:1px 0 1px 13px}
+  .di-quote-q{font-size:12px;color:var(--text-2);font-weight:500;margin-bottom:6px}
+  .di-quote-a{font-family:var(--serif);font-size:14.5px;line-height:1.6;color:var(--text)}
+  .di-quote-d{font-size:11px;color:var(--text-3);margin-top:8px;font-family:var(--mono)}
   /* today focus + upcoming */
   .dlist-card .dcard-label{margin-bottom:6px}
   .dfocus{display:flex;align-items:flex-start;gap:10px;padding:9px 2px;border-top:1px solid var(--border);cursor:pointer}
@@ -2037,6 +2045,41 @@ function dashSetMood(id){
   const m=moodById(id);if(m)toast('Mood logged: '+m.label);
 }
 
+/* On-device journal analysis (runs in the browser; entries never leave it) */
+function journalInsights(){
+  const entries=jEntries();
+  if(!entries.length)return {empty:true};
+  const recent=entries.slice(0,80);
+  const answers=[];recent.forEach(e=>(e.blocks||[]).forEach(b=>{if((b.a||'').trim())answers.push(b.a.trim());}));
+  const STOP=new Set(("the a an and or but if then so to of in on at by for with from into out up down over under than too very just also even still about as is are was were be been being am have has had do does did doing will would shall can could should may might must not no nor yes get gets got go goes going gone went come came make makes made take took like really much many more most some any all each every today tomorrow yesterday day days time times thing things think thinks thought feel feels felt want wants need needs know knows knew good better best lot bit able way ways this that these those there here what when where who how why which while because been your you'm i'm it's that's don't didn't can't won't i've").split(/\s+/));
+  const wc={};
+  (answers.join(' ').toLowerCase().replace(/[’']/g,"'").match(/[a-z][a-z']{3,}/g)||[]).forEach(w=>{w=w.replace(/'s$/,'').replace(/'/g,'');if(w.length>=4&&!STOP.has(w))wc[w]=(wc[w]||0)+1;});
+  const capStop=new Set(['The','This','That','What','When','Where','Who','Why','How','Today','Yesterday','Tomorrow','My','Our','His','Her','Their','Its','It','We','You','They','And','But','For','With','Was','Were','Have','Has','Had','Just','Really','Maybe','Also','Even','Still','One','Two','First','Last','Next','Now','Then','There','Here','Free','Writing','Daily','Affirmation']);
+  const cc={};
+  answers.forEach(a=>{(a.match(/\b[A-Z][a-zA-Z'’]{2,}\b/g)||[]).forEach(w=>{if(!capStop.has(w))cc[w]=(cc[w]||0)+1;});});
+  const seenL=new Set(),chips=[];
+  Object.entries(cc).filter(x=>x[1]>=2).sort((a,b)=>b[1]-a[1]).forEach(([w,c])=>{if(chips.length<9&&!seenL.has(w.toLowerCase())){seenL.add(w.toLowerCase());chips.push({w,c});}});
+  Object.entries(wc).filter(x=>x[1]>=3).sort((a,b)=>b[1]-a[1]).forEach(([w,c])=>{if(chips.length<9&&!seenL.has(w)){seenL.add(w);chips.push({w,c});}});
+  // mood read
+  const mvals=[],byWd={},valByDate={};
+  recent.forEach(e=>{if(e.mood){const v=moodVal(e.mood);if(v){mvals.push(v);valByDate[e.date]=v;const wd=new Date(e.date+'T00:00:00').getDay();(byWd[wd]=byWd[wd]||[]).push(v);}}});
+  let moodRead='';
+  if(mvals.length>=3){
+    const avg=mvals.reduce((a,b)=>a+b,0)/mvals.length;
+    let bestWd=null,bestA=-1;Object.entries(byWd).forEach(([wd,arr])=>{if(arr.length>=2){const a=arr.reduce((x,y)=>x+y,0)/arr.length;if(a>bestA){bestA=a;bestWd=+wd;}}});
+    const wdName=['Sundays','Mondays','Tuesdays','Wednesdays','Thursdays','Fridays','Saturdays'];
+    const last7=[],prev7=[];for(let i=0;i<14;i++){const d=new Date();d.setDate(d.getDate()-i);const v=valByDate[dateKey(d)];if(v)(i<7?last7:prev7).push(v);}
+    let trend='';if(last7.length>=2&&prev7.length>=2){const a=last7.reduce((x,y)=>x+y,0)/last7.length,b=prev7.reduce((x,y)=>x+y,0)/prev7.length;if(a-b>=0.4)trend=' and trending up lately';else if(b-a>=0.4)trend=' and dipping a little lately';}
+    moodRead='Mood averages '+avg.toFixed(1)+'/5'+(bestWd!=null&&bestA>=avg?', brightest on '+wdName[bestWd]:'')+trend+'.';
+  }
+  let snip=null;
+  for(const e of entries){const b=(e.blocks||[]).find(x=>(x.a||'').trim());if(b){snip={date:e.date,q:b.free?'':(b.q||''),a:b.a.trim()};break;}}
+  const catC={};recent.forEach(e=>(e.blocks||[]).forEach(b=>{if((b.a||'').trim()&&b.cat&&!b.free)catC[b.cat]=(catC[b.cat]||0)+1;}));
+  const topCat=Object.entries(catC).sort((a,b)=>b[1]-a[1])[0];
+  return {n:entries.length,chips,moodRead,snip,topCat:topCat?jCat(topCat[0]).label:null};
+}
+const JI_ICON='<svg width="13" height="13" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5" style="margin-right:1px"><path d="M8 3.5C6.5 2 3 2 3 2v9s3.5 0 5 1.5C9.5 11 13 11 13 11V2s-3.5 0-5 1.5z"/><path d="M8 3.5v9"/></svg>';
+
 function renderDashboard(){
   setTitle('Today',null);
   const now=new Date(),todayK=dateKey(now);
@@ -2137,12 +2180,26 @@ function renderDashboard(){
     return '<div class="dup" onclick="openDetail(\''+i.id+'\')" style="cursor:pointer"><span class="dup-date">'+fmtDue(i.dueDate)+'</span><span class="dup-cat" style="background:'+cat.color+'"></span><span class="dup-text">'+esc(i.text||'')+'</span></div>';}).join(''):'<div class="dempty">Nothing scheduled in the next week</div>';
   const upCard='<div class="dcard dlist-card"><div class="dcard-label"><svg width="13" height="13" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><rect x="2" y="3" width="12" height="11" rx="1.5"/><path d="M2 6.5h12M5 2v2M11 2v2"/></svg>Upcoming</div>'+upHTML+'</div>';
 
+  // journal insights (on-device analysis)
+  const ji=journalInsights();
+  let reflectSection;
+  if(ji.empty){
+    reflectSection='<div class="dcard"><div class="dcard-label">'+JI_ICON+'Journal insights</div><div class="dempty">Write a few entries and your recurring themes, the people you mention, your mood patterns, and a surfaced reflection will appear here.</div><button class="dcard-cta" onclick="newJournalEntry()">Start journaling →</button></div>';
+  } else {
+    const moodLine=ji.moodRead?'<div class="dstat-sub" style="margin-bottom:12px">'+esc(ji.moodRead)+'</div>':'';
+    const chipsHTML=ji.chips.length?'<div class="di-label">Recurring themes &amp; people</div><div class="di-chips">'+ji.chips.map(c=>'<span class="di-chip">'+esc(c.w)+'<span class="di-chip-n">'+c.c+'</span></span>').join('')+'</div>':'<div class="dstat-sub">Themes will surface as you write more.</div>';
+    const topcat=ji.topCat?'<div class="dchart-cap">You reflect most on <strong style="color:var(--text-2)">'+esc(ji.topCat)+'</strong>.</div>':'';
+    const left='<div class="dcard"><div class="dcard-label">'+JI_ICON+'Journal insights</div>'+moodLine+chipsHTML+topcat+'<button class="dcard-cta" onclick="setView(\'journal\')">Open journal →</button></div>';
+    const right=ji.snip?'<div class="dcard"><div class="dcard-label">From your journal</div><div class="di-quote"><div class="di-quote-q">'+(ji.snip.q?esc(ji.snip.q):'Free writing')+'</div><div class="di-quote-a">'+esc(ji.snip.a.slice(0,170))+(ji.snip.a.length>170?'…':'')+'</div><div class="di-quote-d">'+esc(jFullDate(ji.snip.date))+'</div></div></div>':'';
+    reflectSection=right?'<div class="dins">'+left+right+'</div>':left;
+  }
   document.getElementById('list').innerHTML='<div class="dash-wrap">'
     +'<div class="dash-greet"><div class="dash-hello">'+timeGreeting()+', JB</div><div class="dash-sub">'+now.toLocaleDateString('en-US',{weekday:'long',month:'long',day:'numeric'})+' &nbsp;·&nbsp; '+highlight+'</div></div>'
     +'<div class="dash-hero">'+habitCard+moodCard+tasksCard+journalCard+'</div>'
     +'<div class="dash-sec">This week</div>'
     +'<div class="dins">'+heatCard+moodTrendCard+'</div>'
-    +'<div class="dins-row">'+catCard+compCard+'</div>'
+    +'<div class="dash-sec">Reflections</div>'+reflectSection
+    +'<div class="dins-row" style="margin-top:13px">'+catCard+compCard+'</div>'
     +'<div class="dash-sec">Now</div>'
     +'<div class="dins-row">'+focusCard+upCard+'</div>'
     +'</div>';
