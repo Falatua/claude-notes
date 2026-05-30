@@ -901,6 +901,7 @@ const CATS = {
   finance:  {label:'Finance',      color:'#fbbf24', dim:'rgba(251,191,36,.12)'},
   tech:     {label:'Tech',         color:'#38bdf8', dim:'rgba(56,189,248,.12)'},
   shopping: {label:'Shopping',     color:'#fb923c', dim:'rgba(251,146,60,.12)'},
+  grocery:  {label:'Grocery',      color:'#10b981', dim:'rgba(16,185,129,.12)'},
   errands:  {label:'Errands',      color:'#fb7185', dim:'rgba(251,113,133,.12)'},
   lifestyle:{label:'Lifestyle',    color:'#a3e635', dim:'rgba(163,230,53,.12)'},
   health:   {label:'Health',       color:'#2dd4bf', dim:'rgba(45,212,191,.12)'},
@@ -1342,6 +1343,7 @@ function guessEmoji(text,category){
     [/invest|stocks|capital gains|portfolio/,'📈'],
     [/rent|\bbill\b|invoice|\btax\b|budget|payment|mortgage|finance/,'💰'],
     [/donate|donation|gofundme|charity/,'❤️'],
+    [/tuna|ahi|salmon|\bfish\b|poke/,'🐟'],
     [/\bbuy\b|order|shop|grocery|groceries|purchase|\bcart\b|grip|accessor/,'🛒'],
     [/\bcall\b|phone call|ring\b/,'📞'],
     [/email|inbox|reply/,'✉️'],
@@ -1362,7 +1364,7 @@ function guessEmoji(text,category){
     [/idea|brainstorm|concept/,'💡']
   ];
   for(let i=0;i<map.length;i++){if(map[i][0].test(s))return map[i][1];}
-  const c={work:'💼',personal:'🌿',family:'👨‍👩‍👧',kids:'🧒',finance:'💰',tech:'💻',shopping:'🛒',errands:'🧾',lifestyle:'✨',health:'🩺',musubi:'🌺',general:'📌'};
+  const c={work:'💼',personal:'🌿',family:'👨‍👩‍👧',kids:'🧒',finance:'💰',tech:'💻',shopping:'🛒',grocery:'🛒',errands:'🧾',lifestyle:'✨',health:'🩺',musubi:'🌺',general:'📌'};
   return c[category]||'📌';
 }
 
