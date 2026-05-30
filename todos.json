@@ -1,5 +1,18 @@
 [
   {
+    "id": "tg-016",
+    "text": "Buy more tuna",
+    "type": "task",
+    "emoji": "🐟",
+    "notes": "First item in the new Grocery list.",
+    "priority": "normal",
+    "category": "grocery",
+    "source": "telegram",
+    "done": false,
+    "archived": false,
+    "createdAt": "2026-05-30T21:43:04Z"
+  },
+  {
     "id": "tg-015",
     "text": "Roman TD: clarify intro instructions (prospects → towers → combo towers, and 'tile' vs 'map')",
     "type": "note",
