@@ -340,6 +340,72 @@
   .due-chip.overdue{color:var(--red);background:var(--red-dim)}
   .due-chip.soon{color:var(--accent);background:var(--accent-dim)}
 
+  /* ===== Today dashboard ===== */
+  .dash-wrap{max-width:1080px;margin:0 auto;padding:4px 0 52px;animation:headIn .4s ease both}
+  .dash-greet{margin:4px 0 18px}
+  .dash-hello{font-size:25px;font-weight:700;letter-spacing:-.5px;color:var(--text)}
+  .dash-sub{font-size:13px;color:var(--text-2);margin-top:5px}
+  .dash-sub .hl{color:var(--accent);font-weight:500}
+  .dash-hero{display:grid;grid-template-columns:repeat(4,1fr);gap:13px;margin-bottom:6px}
+  .dcard{background:var(--surface);border:1px solid var(--border);border-radius:var(--radius-lg);padding:15px 16px;display:flex;flex-direction:column;transition:border-color var(--t),box-shadow var(--t);min-width:0}
+  .dcard:hover{border-color:var(--border-2)}
+  .dcard-label{font-size:10.5px;font-weight:600;text-transform:uppercase;letter-spacing:.06em;color:var(--text-3);margin-bottom:11px;display:flex;align-items:center;gap:6px}
+  .dcard-label svg{opacity:.8}
+  .dcard-cta{margin-top:auto;font-size:12px;color:var(--accent);background:none;border:none;cursor:pointer;font-family:inherit;padding:6px 0 0;text-align:left;width:fit-content}
+  .dcard-cta:hover{text-decoration:underline}
+  .dhabit{align-items:center;text-align:center}
+  .dring{position:relative;width:104px;height:104px;margin:0 auto 8px}
+  .dring-center{position:absolute;inset:0;display:flex;flex-direction:column;align-items:center;justify-content:center;pointer-events:none}
+  .dring-num{font-family:var(--mono);font-size:20px;font-weight:700;color:var(--text);line-height:1;font-variant-numeric:tabular-nums}
+  .dring-den{font-size:10.5px;color:var(--text-3);margin-top:3px}
+  .dstreak{display:inline-flex;align-items:center;gap:4px;font-size:12px;font-weight:600;font-family:var(--mono);color:var(--accent);background:var(--accent-dim);padding:2px 9px;border-radius:20px;font-variant-numeric:tabular-nums}
+  .dstreak.cold{color:var(--text-3);background:var(--surface-hover)}
+  .dmood-faces{display:flex;gap:5px;margin:2px 0 9px}
+  .dmood-face{flex:1;height:34px;border-radius:8px;border:1px solid var(--border-2);background:transparent;cursor:pointer;display:flex;align-items:center;justify-content:center;font-size:16px;transition:background var(--t),border-color var(--t),transform .12s;line-height:1}
+  .dmood-face:hover{border-color:var(--mc,var(--accent));transform:translateY(-1px)}
+  .dmood-face.on{background:var(--mdim);border-color:var(--mc)}
+  .dstat-row{display:flex;align-items:baseline;gap:8px;margin-bottom:3px;flex-wrap:wrap}
+  .dstat-big{font-family:var(--mono);font-size:30px;font-weight:700;color:var(--text);line-height:1;font-variant-numeric:tabular-nums}
+  .dstat-big.red{color:var(--red)}
+  .dstat-unit{font-size:12px;color:var(--text-3)}
+  .dstat-sub{font-size:12px;color:var(--text-2);line-height:1.5}
+  .dstat-sub .over{color:var(--red);font-weight:500}
+  .dmini{margin-top:auto;padding-top:8px}
+  /* insights */
+  .dash-sec{font-size:11.5px;font-weight:700;text-transform:uppercase;letter-spacing:.07em;color:var(--text-3);margin:24px 2px 12px}
+  .dins{display:grid;grid-template-columns:2fr 1fr;gap:13px}
+  .dins-row{display:grid;grid-template-columns:1fr 1fr;gap:13px;margin-top:13px}
+  .dchart-cap{font-size:12px;color:var(--text-3);margin-top:9px;line-height:1.5}
+  .dlegend{display:flex;flex-wrap:wrap;gap:5px 12px;margin-top:11px}
+  .dleg{display:inline-flex;align-items:center;gap:6px;font-size:11.5px;color:var(--text-2)}
+  .dleg-dot{width:9px;height:9px;border-radius:3px;flex-shrink:0}
+  .dleg-val{color:var(--text-3);font-variant-numeric:tabular-nums;margin-left:2px}
+  /* heatmap */
+  .dheat{display:flex;gap:3px;overflow-x:auto;padding:2px 0 4px}
+  .dheat-col{display:flex;flex-direction:column;gap:3px}
+  .dheat-cell{width:14px;height:14px;border-radius:3px;flex-shrink:0}
+  .dheat-foot{display:flex;align-items:center;justify-content:flex-end;gap:5px;font-size:10.5px;color:var(--text-3);margin-top:9px}
+  .dheat-swatch{width:11px;height:11px;border-radius:2px}
+  .dbars{display:flex;align-items:flex-end;gap:4px;height:92px;margin-top:2px}
+  .dbar{flex:1;min-width:0;background:var(--accent);border-radius:3px 3px 0 0;opacity:.9;min-height:2px}
+  .dbar.empty{background:var(--border-2);opacity:.5;height:2px!important}
+  /* today focus + upcoming */
+  .dlist-card .dcard-label{margin-bottom:6px}
+  .dfocus{display:flex;align-items:flex-start;gap:10px;padding:9px 2px;border-top:1px solid var(--border);cursor:pointer}
+  .dfocus:first-of-type{border-top:none}
+  .dfocus .cb{margin-top:1px}
+  .dfocus-body{flex:1;min-width:0}
+  .dfocus-text{font-size:13.5px;color:var(--text);line-height:1.4}
+  .dfocus-meta{display:flex;align-items:center;gap:7px;margin-top:4px;flex-wrap:wrap}
+  .dempty{font-size:13px;color:var(--text-3);padding:14px 2px;text-align:center;font-style:italic}
+  .dup{display:flex;align-items:center;gap:11px;padding:8px 2px;border-top:1px solid var(--border)}
+  .dup:first-of-type{border-top:none}
+  .dup-date{font-family:var(--mono);font-size:11px;color:var(--text-3);min-width:50px;font-variant-numeric:tabular-nums}
+  .dup-text{flex:1;font-size:13px;color:var(--text-2);min-width:0;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+  .dup-cat{width:8px;height:8px;border-radius:50%;flex-shrink:0}
+  @media(max-width:920px){.dash-hero{grid-template-columns:repeat(2,1fr)}.dins{grid-template-columns:1fr}.dins-row{grid-template-columns:1fr}}
+  @media(max-width:560px){.dash-hero{grid-template-columns:1fr}}
+
   /* ===== Journal (distinct calm / editorial surface) ===== */
   .journal-wrap{max-width:700px;margin:0 auto;padding:8px 0 48px}
   .journal-head{display:flex;align-items:center;gap:14px;margin:4px 0 8px}
@@ -457,7 +523,11 @@
 
   <div class="sb-section">
     <div class="sb-label">Workspace</div>
-    <div class="nav-item active" id="nav-view-list" onclick="setView('list')" role="button" tabindex="0">
+    <div class="nav-item active" id="nav-view-dashboard" onclick="setView('dashboard')" role="button" tabindex="0">
+      <svg class="nav-icon" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M2 9.5L8 4l6 5.5"/><path d="M3.5 8.5V13a.5.5 0 0 0 .5.5h3v-3h2v3h3a.5.5 0 0 0 .5-.5V8.5"/></svg>
+      Today
+    </div>
+    <div class="nav-item" id="nav-view-list" onclick="setView('list')" role="button" tabindex="0">
       <svg class="nav-icon" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M5 4h9M5 8h9M5 12h9"/><circle cx="2.4" cy="4" r="1"/><circle cx="2.4" cy="8" r="1"/><circle cx="2.4" cy="12" r="1"/></svg>
       Tasks &amp; Notes
     </div>
@@ -483,7 +553,7 @@
 
   <div class="sb-section">
     <div class="sb-label">Views</div>
-    <div class="nav-item active" id="nav-all" onclick="setFilter('all','view')" role="button" tabindex="0">
+    <div class="nav-item" id="nav-all" onclick="setFilter('all','view')" role="button" tabindex="0">
       <svg class="nav-icon" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><rect x="2" y="2" width="5" height="5" rx="1"/><rect x="9" y="2" width="5" height="5" rx="1"/><rect x="2" y="9" width="5" height="5" rx="1"/><rect x="9" y="9" width="5" height="5" rx="1"/></svg>
       All Items <span class="nav-count" id="cnt-all">0</span>
     </div>
@@ -836,7 +906,7 @@ const SRC_LABEL  = {telegram:'via Telegram',browser:'added manually'};
 function load(){try{return JSON.parse(localStorage.getItem(KEY))||[];}catch{return [];}}
 function save(d){localStorage.setItem(KEY,JSON.stringify(d));}
 
-let filter='all', filterMode='view', _booting=true, view='list';
+let filter='all', filterMode='view', _booting=true, view='dashboard';
 
 function uid(){return Date.now().toString(36)+Math.random().toString(36).slice(2,5);}
 
@@ -1197,6 +1267,7 @@ function saveDetail(){
   else{it.archived=false;it.done=false;delete it.archivedAt;}
   it.links=collectLinks();
   it.attachments=_dAttach;
+  it.userEdited=true; // protect this item's fields from being overwritten by the server seed
   it.updatedAt=new Date().toISOString();
   try{save(items);}
   catch(err){toast('Storage full — remove a large attachment and retry');return;}
@@ -1347,15 +1418,19 @@ function toast(msg){
           source: x.source||'telegram',
           type: x.type||'task',
         }));
-      // Also update done state for existing items if server marks them done
+      // For existing items: sync server field edits (dueDate, priority, etc.) unless the user edited it in-app, and pick up server done-state
       let changed=fresh.length>0;
       const merged=[...fresh,...local.map(loc=>{
         const srv=serverItems.find(s=>s.id===loc.id);
-        if(srv&&srv.done&&!loc.archived){
-          changed=true;
-          return{...loc,done:true,archived:true,archivedAt:loc.archivedAt||new Date().toISOString()};
+        if(!srv)return loc;
+        let next=loc;
+        if(!loc.userEdited){
+          ['text','notes','description','priority','category','type','emoji','dueDate'].forEach(k=>{
+            if(srv[k]!==undefined && srv[k]!==next[k]){next=(next===loc?{...loc}:next);next[k]=srv[k];changed=true;}
+          });
         }
-        return loc;
+        if(srv.done&&!next.archived){next=(next===loc?{...loc}:next);next.done=true;next.archived=true;next.archivedAt=next.archivedAt||new Date().toISOString();changed=true;}
+        return next;
       })];
       if(changed)save(merged);
       _booting=false;render();updateCounts();
@@ -1385,7 +1460,7 @@ function toast(msg){
           });
         }
       });
-      if(changed){rSave(scope,store);if(view===scope)render();updateCounts();}
+      if(changed){rSave(scope,store);if(view===scope||view==='dashboard')render();updateCounts();}
     }).catch(function(){});
   });
 })();
@@ -1473,7 +1548,7 @@ function closeRoutine(){document.getElementById('routine-modal').classList.add('
 function closeRoutineOutside(e){if(e.target.id==='routine-modal')closeRoutine();}
 
 /* ===== View switching ===== */
-function syncWorkspaceNav(v){['list','daily','monthly','calendar','journal'].forEach(k=>{const e=document.getElementById('nav-view-'+k);if(e)e.classList.toggle('active',k===v);});}
+function syncWorkspaceNav(v){['dashboard','list','daily','monthly','calendar','journal'].forEach(k=>{const e=document.getElementById('nav-view-'+k);if(e)e.classList.toggle('active',k===v);});}
 function applyViewChrome(v){
   const sw=document.getElementById('search-wrap'), aa=document.getElementById('add-area'), qt=document.getElementById('quick-type'), qi=document.getElementById('quick-input');
   if(v==='list'){sw.style.display='';aa.style.display='';qt.style.display='';qi.placeholder='Quick add — press Enter to save';}
@@ -1481,6 +1556,7 @@ function applyViewChrome(v){
   else if(v==='monthly'){sw.style.display='none';aa.style.display='';qt.style.display='none';qi.placeholder='Add a monthly item — Enter to save';}
   else if(v==='calendar'){sw.style.display='none';aa.style.display='none';}
   else if(v==='journal'){sw.style.display='none';aa.style.display='none';}
+  else if(v==='dashboard'){sw.style.display='none';aa.style.display='none';}
   // Task action buttons (Import/Export/New Item) only apply to the list views; hide in the journal's calm space
   const ha=document.querySelector('.header-actions');if(ha)ha.style.display=(v==='journal')?'none':'';
 }
@@ -1505,6 +1581,7 @@ function renderView(){
   else if(view==='monthly')renderRoutine('monthly');
   else if(view==='calendar')renderCalendar();
   else if(view==='journal')renderJournal();
+  else if(view==='dashboard')renderDashboard();
 }
 
 /* ===== Routine rendering ===== */
@@ -1918,6 +1995,158 @@ function addPromptFromManager(){
 function delPrompt(id){const store=jLoad();const p=store.prompts.find(x=>x.id===id);if(!p||p.builtin)return;if(!confirm('Remove this question from your library?'))return;store.prompts=store.prompts.filter(x=>x.id!==id);jSave(store);renderPromptList();toast('Question removed');}
 function closePrompts(){document.getElementById('prompts-modal').classList.add('hidden');restoreFocus();}
 function closePromptsOutside(e){if(e.target.id==='prompts-modal')closePrompts();}
+
+/* ===== Today dashboard ===== */
+function timeGreeting(){const h=new Date().getHours();return h<12?'Good morning':h<18?'Good afternoon':'Good evening';}
+function moodVal(id){return ({great:5,good:4,okay:3,low:2,rough:1})[id]||null;}
+function moodColorByVal(v){const m=JMOODS.find(x=>moodVal(x.id)===v);return m?m.color:'var(--accent)';}
+
+function svgRing(pct,color,size,sw){
+  size=size||104;sw=sw||11;const r=(size-sw)/2,c=2*Math.PI*r,off=c*(1-Math.min(Math.max(pct,0),100)/100);const ctr=size/2;
+  return '<svg width="'+size+'" height="'+size+'" viewBox="0 0 '+size+' '+size+'">'
+    +'<circle cx="'+ctr+'" cy="'+ctr+'" r="'+r+'" fill="none" stroke="var(--surface-hover)" stroke-width="'+sw+'"/>'
+    +'<circle cx="'+ctr+'" cy="'+ctr+'" r="'+r+'" fill="none" stroke="'+(color||'var(--accent)')+'" stroke-width="'+sw+'" stroke-linecap="round" stroke-dasharray="'+c.toFixed(1)+'" stroke-dashoffset="'+off.toFixed(1)+'" transform="rotate(-90 '+ctr+' '+ctr+')"/></svg>';
+}
+function svgDonut(segs,centerText){
+  const size=128,sw=20,r=(size-sw)/2,c=2*Math.PI*r,ctr=size/2;
+  const total=segs.reduce((a,s)=>a+s.value,0)||1;let acc=0,arcs='';
+  segs.forEach(s=>{const len=s.value/total*c;const gap=segs.length>1?2.5:0;const dash=Math.max(len-gap,0.5);
+    arcs+='<circle cx="'+ctr+'" cy="'+ctr+'" r="'+r+'" fill="none" stroke="'+s.color+'" stroke-width="'+sw+'" stroke-dasharray="'+dash.toFixed(1)+' '+(c-dash).toFixed(1)+'" stroke-dashoffset="'+(-acc).toFixed(1)+'" transform="rotate(-90 '+ctr+' '+ctr+')"/>';
+    acc+=len;});
+  const ct=centerText!=null?'<text x="'+ctr+'" y="'+ctr+'" text-anchor="middle" dominant-baseline="central" fill="var(--text)" font-family="ui-monospace,monospace" font-size="24" font-weight="700">'+centerText+'</text>':'';
+  return '<svg width="'+size+'" height="'+size+'" viewBox="0 0 '+size+' '+size+'">'+arcs+ct+'</svg>';
+}
+function svgMoodLine(series){
+  const W=320,H=74,pad=9,n=series.length;
+  const x=i=>pad+i*(W-2*pad)/(n-1),y=v=>H-pad-(v-1)/4*(H-2*pad);
+  const pts=[];series.forEach((v,i)=>{if(v!=null)pts.push([x(i),y(v),v]);});
+  if(!pts.length)return '<div class="dempty" style="padding:24px 2px">No moods logged yet</div>';
+  const poly=pts.map(p=>p[0].toFixed(1)+','+p[1].toFixed(1)).join(' ');
+  const dots=pts.map(p=>'<circle cx="'+p[0].toFixed(1)+'" cy="'+p[1].toFixed(1)+'" r="2.6" fill="'+moodColorByVal(p[2])+'"/>').join('');
+  return '<svg viewBox="0 0 '+W+' '+H+'" width="100%" height="'+H+'" preserveAspectRatio="none">'
+    +'<polyline points="'+poly+'" fill="none" stroke="var(--accent)" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" vector-effect="non-scaling-stroke"/>'+dots+'</svg>';
+}
+function heatColor(ratio){if(ratio<=0)return 'var(--surface-hover)';if(ratio<=.25)return '#5c4216';if(ratio<=.5)return '#9a6e1d';if(ratio<=.75)return '#cf8b1f';return '#e8a020';}
+
+function dashSetMood(id){
+  const store=jLoad(),k=dateKey(new Date()),now=new Date().toISOString();
+  let e=store.entries.find(x=>x.date===k);
+  if(e){e.mood=e.mood===id?null:id;e.updatedAt=now;}
+  else store.entries.unshift({id:uid(),date:k,mood:id,blocks:[],createdAt:now,updatedAt:now});
+  jSave(store);render();updateCounts();
+  const m=moodById(id);if(m)toast('Mood logged: '+m.label);
+}
+
+function renderDashboard(){
+  setTitle('Today',null);
+  const now=new Date(),todayK=dateKey(now);
+  const items=load(),active=items.filter(i=>!i.archived),archived=items.filter(i=>i.archived);
+  // tasks
+  const overdue=active.filter(i=>i.dueDate&&i.dueDate<todayK);
+  const dueToday=active.filter(i=>i.dueDate===todayK);
+  const doneToday=archived.filter(i=>(i.archivedAt||'').slice(0,10)===todayK).length;
+  // daily habits
+  const daily=loadDaily(),dDone=new Set(daily.log[todayK]||[]);
+  const dTotal=daily.templates.length,dDoneN=daily.templates.filter(t=>dDone.has(t.id)).length;
+  const habitPct=dTotal?Math.round(dDoneN/dTotal*100):0;
+  let maxStreak=0;daily.templates.forEach(t=>{const s=routineStreak('daily',t.id);if(s>maxStreak)maxStreak=s;});
+  // mood
+  const entries=jEntries(),todayMood=(entries.find(e=>e.date===todayK)||{}).mood||null;
+  const wk=[];for(let i=0;i<7;i++){const d=new Date();d.setDate(d.getDate()-i);const e=entries.find(x=>x.date===dateKey(d));if(e&&e.mood){const v=moodVal(e.mood);if(v)wk.push(v);}}
+  const weekAvg=wk.length?(wk.reduce((a,b)=>a+b,0)/wk.length):null;
+  const moodSeries=[];for(let i=29;i>=0;i--){const d=new Date();d.setDate(d.getDate()-i);const e=entries.find(x=>x.date===dateKey(d));moodSeries.push(e&&e.mood?moodVal(e.mood):null);}
+  const jStreak=journalStreak(),journaledToday=!!entries.find(e=>e.date===todayK&&((e.blocks&&e.blocks.length)||e.mood));
+  // greeting highlight
+  const hi=[];
+  if(overdue.length)hi.push('<span class="hl" style="color:var(--red)">'+overdue.length+' overdue</span>');
+  if(dueToday.length)hi.push('<span class="hl">'+dueToday.length+' due today</span>');
+  if(dTotal&&dDoneN<dTotal)hi.push((dTotal-dDoneN)+' habit'+((dTotal-dDoneN)>1?'s':'')+' left');
+  if(!todayMood)hi.push('mood not logged');
+  const highlight=hi.length?hi.join(' · '):'You are all caught up. Nice.';
+
+  // hero cards
+  const habitCard='<div class="dcard dhabit"><div class="dcard-label" style="align-self:flex-start"><svg width="13" height="13" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M8 1v2M8 13v2M1 8h2M13 8h2"/><circle cx="8" cy="8" r="3"/></svg>Daily habits</div>'
+    +'<div class="dring">'+svgRing(habitPct)+'<div class="dring-center"><div class="dring-num">'+dDoneN+(dTotal?'<span style="color:var(--text-3);font-size:13px">/'+dTotal+'</span>':'')+'</div><div class="dring-den">today</div></div></div>'
+    +(maxStreak>0?'<span class="dstreak">'+J_FLAME+maxStreak+'-day streak</span>':'<span class="dstreak cold">no streak yet</span>')
+    +'<button class="dcard-cta" onclick="setView(\'daily\')">Open daily checklist →</button></div>';
+
+  const faces={great:'😄',good:'🙂',okay:'😐',low:'😕',rough:'😣'};
+  const moodFaces=JMOODS.map(m=>'<button class="dmood-face'+(todayMood===m.id?' on':'')+'" style="--mc:'+m.color+';--mdim:'+m.dim+'" onclick="dashSetMood(\''+m.id+'\')" title="'+m.label+'" aria-label="Log mood: '+m.label+'">'+faces[m.id]+'</button>').join('');
+  const moodCard='<div class="dcard"><div class="dcard-label"><svg width="13" height="13" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><circle cx="8" cy="8" r="6"/><path d="M5.5 9.5s.9 1.5 2.5 1.5 2.5-1.5 2.5-1.5"/><circle cx="6" cy="6.5" r=".6" fill="currentColor"/><circle cx="10" cy="6.5" r=".6" fill="currentColor"/></svg>How are you?</div>'
+    +'<div class="dmood-faces">'+moodFaces+'</div>'
+    +'<div class="dstat-sub">'+(weekAvg!=null?'This week avg <strong style="color:var(--text)">'+weekAvg.toFixed(1)+'</strong>/5':'Tap a face to log today')+'</div>'
+    +'<button class="dcard-cta" onclick="setView(\'journal\')">Open journal →</button></div>';
+
+  const tasksCard='<div class="dcard"><div class="dcard-label"><svg width="13" height="13" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><rect x="2" y="2" width="12" height="12" rx="2"/><path d="M5 8l2 2 4-4"/></svg>Tasks</div>'
+    +'<div class="dstat-row"><span class="dstat-big">'+active.length+'</span><span class="dstat-unit">open</span></div>'
+    +'<div class="dstat-sub">'+doneToday+' done today'+(dueToday.length?' · '+dueToday.length+' due':'')+(overdue.length?' · <span class="over">'+overdue.length+' overdue</span>':'')+'</div>'
+    +'<button class="dcard-cta" onclick="setView(\'list\')">Open tasks →</button></div>';
+
+  const journalCard='<div class="dcard"><div class="dcard-label"><svg width="13" height="13" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M3.5 2.5H10a1.5 1.5 0 0 1 1.5 1.5v9.5H5A1.5 1.5 0 0 1 3.5 12z"/><path d="M11.5 4H13v9.5M5.5 5.5h3M5.5 8h2"/></svg>Journal</div>'
+    +'<div class="dstat-row"><span class="dstat-big">'+jStreak+'</span><span class="dstat-unit">day streak</span></div>'
+    +'<div class="dstat-sub">'+entries.length+' entr'+(entries.length===1?'y':'ies')+' · '+(journaledToday?'journaled today':'not yet today')+'</div>'
+    +'<button class="dcard-cta" onclick="newJournalEntry()">Write today →</button></div>';
+
+  // habit heatmap (last 17 weeks)
+  const weeks=17,start=new Date(now);start.setHours(0,0,0,0);
+  const dow=(start.getDay()+6)%7;start.setDate(start.getDate()-((weeks-1)*7)-dow);
+  let heatCols='';
+  for(let w=0;w<weeks;w++){let col='';for(let r=0;r<7;r++){const d=new Date(start);d.setDate(start.getDate()+w*7+r);d.setHours(0,0,0,0);
+    if(d>now){col+='<div class="dheat-cell" style="background:transparent"></div>';continue;}
+    const k=dateKey(d),cnt=(daily.log[k]||[]).length,ratio=dTotal?Math.min(cnt/dTotal,1):(cnt>0?1:0);
+    col+='<div class="dheat-cell" style="background:'+heatColor(ratio)+';'+(k===todayK?'outline:1.5px solid var(--accent);outline-offset:1px':'')+'" title="'+k+': '+cnt+' done"></div>';}
+    heatCols+='<div class="dheat-col">'+col+'</div>';}
+  const heatCard='<div class="dcard"><div class="dcard-label">Habit consistency · last 17 weeks</div><div class="dheat">'+heatCols+'</div>'
+    +'<div class="dheat-foot">Less <span class="dheat-swatch" style="background:var(--surface-hover)"></span><span class="dheat-swatch" style="background:#5c4216"></span><span class="dheat-swatch" style="background:#9a6e1d"></span><span class="dheat-swatch" style="background:#cf8b1f"></span><span class="dheat-swatch" style="background:#e8a020"></span> More</div></div>';
+
+  const moodTrendCard='<div class="dcard"><div class="dcard-label">Mood · last 30 days</div>'+svgMoodLine(moodSeries)
+    +'<div class="dchart-cap">'+(weekAvg!=null?'7-day average '+weekAvg.toFixed(1)+'/5':'Log your mood to see trends')+'</div></div>';
+
+  // tasks by category donut
+  const byCat={};active.forEach(i=>{const c=i.category||'general';byCat[c]=(byCat[c]||0)+1;});
+  const catE=Object.entries(byCat).sort((a,b)=>b[1]-a[1]),top=catE.slice(0,5),otherN=catE.slice(5).reduce((a,e)=>a+e[1],0);
+  const segs=top.map(([k,v])=>({value:v,color:(CATS[k]||CATS.general).color,label:(CATS[k]||CATS.general).label}));
+  if(otherN)segs.push({value:otherN,color:'var(--text-3)',label:'Other'});
+  const legend=segs.map(s=>'<span class="dleg"><span class="dleg-dot" style="background:'+s.color+'"></span>'+esc(s.label)+'<span class="dleg-val">'+s.value+'</span></span>').join('');
+  const catCard='<div class="dcard"><div class="dcard-label">Open tasks by area</div>'
+    +(active.length?'<div style="display:flex;gap:16px;align-items:center;flex-wrap:wrap"><div style="flex-shrink:0">'+svgDonut(segs,active.length)+'</div><div class="dlegend" style="flex:1;min-width:120px">'+legend+'</div></div>':'<div class="dempty">No open tasks</div>')+'</div>';
+
+  // completed last 14 days bars
+  const comp=[];for(let i=13;i>=0;i--){const d=new Date();d.setDate(d.getDate()-i);const k=dateKey(d);comp.push(archived.filter(x=>(x.archivedAt||'').slice(0,10)===k).length);}
+  const cMax=Math.max(1,...comp),cTotal=comp.reduce((a,b)=>a+b,0);
+  const bars=comp.map((v,i)=>'<div class="dbar'+(v===0?' empty':'')+'" style="height:'+(v/cMax*100)+'%" title="'+v+' completed"></div>').join('');
+  const compCard='<div class="dcard"><div class="dcard-label">Completed · last 14 days</div><div class="dbars">'+bars+'</div><div class="dchart-cap">'+cTotal+' task'+(cTotal===1?'':'s')+' completed in 2 weeks</div></div>';
+
+  // today focus: overdue + due today + high-priority open
+  const focusItems=[];const seen=new Set();
+  overdue.forEach(i=>{if(!seen.has(i.id)){seen.add(i.id);focusItems.push({i,tag:'overdue'});}});
+  dueToday.forEach(i=>{if(!seen.has(i.id)){seen.add(i.id);focusItems.push({i,tag:'today'});}});
+  sortByPriority(active.filter(i=>i.priority==='high'&&!seen.has(i.id))).forEach(i=>{if(focusItems.length<7&&!seen.has(i.id)){seen.add(i.id);focusItems.push({i,tag:'high'});}});
+  const focusHTML=focusItems.length?focusItems.slice(0,7).map(({i,tag})=>{
+    const cat=CATS[i.category||'general']||CATS.general;
+    const tagHTML=tag==='overdue'?'<span class="due-chip overdue">'+fmtDue(i.dueDate)+'</span>':tag==='today'?'<span class="due-chip soon">today</span>':'<span class="prio-high"><span class="prio-dot"></span>High</span>';
+    return '<div class="dfocus" onclick="openDetail(\''+i.id+'\')"><div class="cb" onclick="event.stopPropagation();toggleDone(\''+i.id+'\')" role="checkbox" aria-checked="false" aria-label="Mark done: '+esc(i.text||'')+'" tabindex="0" onkeydown="if(event.key===\' \'||event.key===\'Enter\'){event.stopPropagation();toggleDone(\''+i.id+'\');event.preventDefault()}"><svg class="cb-check" width="9" height="9" viewBox="0 0 10 10" fill="none" stroke="#111" stroke-width="2.2"><path d="M1.5 5l2.8 2.8 4.2-5"/></svg></div>'
+      +'<div class="dfocus-body"><div class="dfocus-text"><span class="item-emoji">'+(i.emoji||guessEmoji(i.text||'',i.category))+'</span> '+esc(i.text||'')+'</div><div class="dfocus-meta"><span class="badge-cat" style="background:'+cat.dim+';color:'+cat.color+'">'+cat.label+'</span>'+tagHTML+'</div></div></div>';
+  }).join(''):'<div class="dempty">Nothing urgent. Enjoy the breathing room.</div>';
+  const focusCard='<div class="dcard dlist-card"><div class="dcard-label"><svg width="13" height="13" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M8 2a6 6 0 1 0 6 6"/><path d="M8 5v3l2 1.5"/></svg>Today\'s focus</div>'+focusHTML+'</div>';
+
+  // upcoming next 7 days
+  const upEnd=new Date(now);upEnd.setDate(upEnd.getDate()+8);const upEndK=dateKey(upEnd);
+  const upcoming=active.filter(i=>i.dueDate&&i.dueDate>todayK&&i.dueDate<=upEndK).sort((a,b)=>a.dueDate.localeCompare(b.dueDate)).slice(0,7);
+  const upHTML=upcoming.length?upcoming.map(i=>{const cat=CATS[i.category||'general']||CATS.general;
+    return '<div class="dup" onclick="openDetail(\''+i.id+'\')" style="cursor:pointer"><span class="dup-date">'+fmtDue(i.dueDate)+'</span><span class="dup-cat" style="background:'+cat.color+'"></span><span class="dup-text">'+esc(i.text||'')+'</span></div>';}).join(''):'<div class="dempty">Nothing scheduled in the next week</div>';
+  const upCard='<div class="dcard dlist-card"><div class="dcard-label"><svg width="13" height="13" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><rect x="2" y="3" width="12" height="11" rx="1.5"/><path d="M2 6.5h12M5 2v2M11 2v2"/></svg>Upcoming</div>'+upHTML+'</div>';
+
+  document.getElementById('list').innerHTML='<div class="dash-wrap">'
+    +'<div class="dash-greet"><div class="dash-hello">'+timeGreeting()+', JB</div><div class="dash-sub">'+now.toLocaleDateString('en-US',{weekday:'long',month:'long',day:'numeric'})+' &nbsp;·&nbsp; '+highlight+'</div></div>'
+    +'<div class="dash-hero">'+habitCard+moodCard+tasksCard+journalCard+'</div>'
+    +'<div class="dash-sec">This week</div>'
+    +'<div class="dins">'+heatCard+moodTrendCard+'</div>'
+    +'<div class="dins-row">'+catCard+compCard+'</div>'
+    +'<div class="dash-sec">Now</div>'
+    +'<div class="dins-row">'+focusCard+upCard+'</div>'
+    +'</div>';
+}
 
 /* Init */
 buildCatOptions('quick-cat');
