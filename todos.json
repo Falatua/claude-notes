@@ -1,5 +1,18 @@
 [
   {
+    "id": "c-game-transfer",
+    "text": "Transfer 3DS and Switch games into my own Dropbox",
+    "type": "task",
+    "emoji": "🎮",
+    "notes": "Move the 3DS and Switch game files/backups over to my personal Dropbox.",
+    "priority": "normal",
+    "category": "tech",
+    "source": "chat",
+    "done": false,
+    "archived": false,
+    "createdAt": "2026-05-30T02:49:58Z"
+  },
+  {
     "id": "c-coins-cash",
     "text": "Take all coins and turn them into cash",
     "type": "task",
