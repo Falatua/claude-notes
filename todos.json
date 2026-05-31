@@ -1,5 +1,19 @@
 [
   {
+    "id": "tg-018",
+    "text": "Train Claude on Mike Israetel's RP content for hypertrophy programming",
+    "type": "note",
+    "emoji": "🏋️",
+    "notes": "Build a Claude knowledge base from Mike Israetel's YouTube transcripts (RP Hypertrophy, RP Strength, and channels he appears on) on hypertrophy, weight training, and fat loss, so Claude can write training programs with his methodology.",
+    "description": "Idea: collect YouTube transcripts of Mike Israetel's videos across RP Hypertrophy, RP Strength, and other channels he features on. Use that corpus (training, hypertrophy, weight training, fat loss, programming principles) as a knowledge base so Claude can program workouts the way he would. Open questions for later: how to pull transcripts at scale, retrieval (RAG) vs fine-tuning, copyright/usage of the transcripts, and how to structure the program output.",
+    "priority": "normal",
+    "category": "tech",
+    "source": "telegram",
+    "done": false,
+    "archived": false,
+    "createdAt": "2026-05-31T02:06:17Z"
+  },
+  {
     "id": "tg-017",
     "text": "Dad in town (Jun 7-11)",
     "type": "note",
